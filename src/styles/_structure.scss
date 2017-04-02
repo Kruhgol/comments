@@ -1,0 +1,31 @@
+body {
+    height: 100%;
+    background-color: $bodyColor;
+
+    .wrapper {
+        position: relative;
+        min-height: 100%;
+
+        .content {
+            padding-bottom: $marginFooterHeight;  
+            margin: auto;
+            width: $contentWidth;
+        }   
+
+        .footer {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: $footerHeight;
+            .footer-content {
+                width: $contentWidth;
+                margin: auto;
+            }
+        }
+    }
+}
+
+.clear-both {
+    clear: both;
+}

@@ -1,0 +1,51 @@
+{
+  "name": "comments",
+  "version": "1.0.0",
+  "description": "comments for site",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kruhgol/alohafriends.git"
+  },
+  "keywords": [
+    "travel",
+    "good",
+    "friends"
+  ],
+  "author": "N.Krugol",
+  "license": "ISC",
+  "devDependencies": {
+    "angular": "^1.5.8",
+    "bower": "^1.8.0",
+    "browserify": "^13.1.1",
+    "browserify-shim": "^3.8.12",
+    "connect": "^2.24.2",
+    "del": "^2.2.2",
+    "gulp": "^3.9.0",
+    "gulp-angular-templatecache": "^2.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-header": "^1.8.8",
+    "gulp-imagemin": "^3.1.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.3.2",
+    "gulp-watch": "^4.3.11",
+    "run-sequence": "^1.2.2",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "browser": {
+    "angular": "./bower_components/angular/angular.min.js",
+    "angular-route": "./bower_components/angular-route/angular-route.min.js"
+  },
+  "browserify-shim": {},
+  "bugs": {
+    "url": "https://github.com/Kruhgol/alohafriends/issues"
+  },
+  "homepage": "https://github.com/Kruhgol/alohafriends#readme",
+  "dependencies": {
+    "angular-cookies": "^1.5.8",
+    "angular-socialshare": "^2.3.7"
+  }
+}

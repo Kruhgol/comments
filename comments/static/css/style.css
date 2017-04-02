@@ -1,0 +1,142 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 12px;
+  color: #000000;
+  vertical-align: top;
+  font-family: tahoma, arial, verdana, geneva, lucida, "lucida grande", helvetica, sans-serif; }
+
+html {
+  height: 100%;
+  background-color: #ffffff; }
+
+body {
+  height: 100%;
+  background-color: #ffffff; }
+  body .wrapper {
+    position: relative;
+    min-height: 100%; }
+    body .wrapper .content {
+      padding-bottom: 220px;
+      margin: auto;
+      width: 1200px; }
+    body .wrapper .footer {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 200px; }
+      body .wrapper .footer .footer-content {
+        width: 1200px;
+        margin: auto; }
+
+.clear-both {
+  clear: both; }
+
+@font-face {
+  font-family: "CertaSans-Medium";
+  src: url("./../fonts/CertaSans-Medium/f4543cc99e81e6836eb3a8a0c93a721e.eot");
+  /* IE9*/
+  src: url("./../fonts/CertaSans-Medium/f4543cc99e81e6836eb3a8a0c93a721e.eot?#iefix") format("embedded-opentype"), url("./../fonts/CertaSans-Medium/f4543cc99e81e6836eb3a8a0c93a721e.woff2") format("woff2"), url("./../fonts/CertaSans-Medium/f4543cc99e81e6836eb3a8a0c93a721e.woff") format("woff"), url("./../fonts/CertaSans-Medium/f4543cc99e81e6836eb3a8a0c93a721e.ttf") format("truetype"), url("./../fonts/CertaSans-Medium/f4543cc99e81e6836eb3a8a0c93a721e.svg#CertaSans-Medium") format("svg");
+  /* iOS 4.1- */ }
+
+@font-face {
+  font-family: "Engine-Regular";
+  src: url("./../fonts/Engine-Regular/EngineRegular.eot");
+  /* IE9*/
+  src: url("./../fonts/Engine-Regular/EngineRegular.eot?#iefix") format("embedded-opentype"), url("./../fonts/Engine-Regular/EngineRegular.woff") format("woff"), url("./../fonts/Engine-Regular/EngineRegular.ttf") format("truetype"), url("./../fonts/Engine-Regular/90767eeaed7204c074162c5a44e4145f.svg#Engine-Regular") format("svg");
+  /* iOS 4.1- */ }
+
+@font-face {
+  font-family: "Minion-Pro";
+  src: url("./../fonts/MinionPro/fe9c236a1c142788cb16ec5238c7833e.eot");
+  /* IE9*/
+  src: url("./../fonts/MinionPro/fe9c236a1c142788cb16ec5238c7833e.eot?#iefix") format("embedded-opentype"), url("./../fonts/MinionPro/fe9c236a1c142788cb16ec5238c7833e.woff2") format("woff2"), url("./../fonts/MinionPro/fe9c236a1c142788cb16ec5238c7833e.woff") format("woff"), url("./../fonts/MinionPro/fe9c236a1c142788cb16ec5238c7833e.ttf") format("truetype"), url("./../fonts/MinionPro/fe9c236a1c142788cb16ec5238c7833e.svg#Minion Pro") format("svg");
+  /* iOS 4.1- */ }
+
+.add-comment {
+  width: 400px;
+  background-color: green;
+  margin: auto; }
+  .add-comment p {
+    font-size: 20px;
+    text-align: center;
+    margin: 10px; }
+  .add-comment form {
+    width: 100%;
+    text-align: center; }
+    .add-comment form label {
+      font-size: 18px; }
+    .add-comment form input {
+      margin: 10px;
+      border-radius: 5px;
+      height: 25px;
+      font-size: 16px; }
+    .add-comment form .comment-textarea {
+      position: relative;
+      width: 400px;
+      text-align: left;
+      height: 200px;
+      margin: 10px; }
+      .add-comment form .comment-textarea textarea {
+        width: 230px;
+        height: 150px;
+        position: absolute;
+        z-index: 2;
+        top: 30px;
+        left: 0;
+        border-radius: 10px;
+        font-size: 16px; }
+      .add-comment form .comment-textarea .buttons {
+        padding-top: 0px;
+        position: relative;
+        padding-left: 250px;
+        width: 130px; }
+        .add-comment form .comment-textarea .buttons p {
+          font-size: 14px;
+          margin-bottom: 0; }
+        .add-comment form .comment-textarea .buttons button {
+          margin-top: 10px; }
+    .add-comment form .captha {
+      border: solid 1px black; }
+      .add-comment form .captha img {
+        float: left; }
+      .add-comment form .captha input {
+        float: right;
+        width: 100px; }
+    .add-comment form .send {
+      margin: 10px;
+      height: 25px;
+      font-size: 16px;
+      border-radius: 5px; }
+
+.comments {
+  width: 100%;
+  margin-top: 20px; }
+  .comments .comment {
+    margin: 5px 0 5px 0; }
+    .comments .comment .comments-child {
+      padding-left: 25px; }
+
+.comment-parent {
+  width: 100%;
+  min-width: 400px;
+  height: 100px;
+  background-color: red; }
+  .comment-parent .user-data > div {
+    display: inline;
+    float: left; }
+    .comment-parent .user-data > div:nth-child(6), .comment-parent .user-data > div:nth-child(5), .comment-parent .user-data > div:nth-child(4) {
+      float: right; }
+  .comment-parent .user-data {
+    width: 100%;
+    height: 50px; }

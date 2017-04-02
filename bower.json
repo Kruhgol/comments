@@ -1,0 +1,20 @@
+{
+  "name": "comments",
+  "description": "comments for site",
+  "main": "index.js",
+  "authors": [
+    "N.Krugol"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "travel",
+    "good",
+    "friends"
+  ],
+  "homepage": "",
+  "dependencies": {
+    "angular": "1.5.8",
+    "angular-route": "1.5.8",
+    "angular-no-captcha": "^0.6.0"
+  }
+}

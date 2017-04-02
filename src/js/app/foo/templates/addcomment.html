@@ -1,0 +1,37 @@
+<div class="add-comment">
+    <p>Send comment</p>
+    <form name="addCommentForm">
+        <label for="name">Your name:</label><br/>
+        <input type="text" name="userName" id="name" placeholder="Enter your name"><br/>
+
+        <label for="email">Your email:</label><br/>
+        <input type="text" name="userEmail" id="email" placeholder="Enter your email"><br/>
+
+        <label for="url">Your homepage url:</label><br/>
+        <input type="text" name="userUrl" id="url" placeholder="Enter your homepage url"><br/>
+        <div class="comment-textarea">
+                <label for="comment">Enter your comment:</label><br/>  
+                <textarea name = "userComment" id="comment" placeholder="Enter your comment"></textarea>
+                <div class="buttons">
+                    <p>You can use tags:</p>
+                    <button>&lt;i&gt;</button><br/>
+                    <button>&lt;strong&gt;</button><br/>
+                    <button>&lt;a&gt;</button><br/>
+                    <button>&lt;code&gt;</button><br/>
+                </div>    
+        </div>   
+        <div class="captha">
+            <no-captcha
+                g-recaptcha-response="gRecaptchaResponse"
+                theme='light'
+                control="noCaptchaControl"
+                site-key="<your site key>">
+            </no-captcha>
+  <!--           <img src="dd" alt="dd">
+            <input type="text" name="captha">
+            <div class="clear-both"></div> -->
+        </div> 
+        <button class="send">Send comment!</button>    
+    
+    </form>
+</div>

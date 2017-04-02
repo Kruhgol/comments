@@ -1,0 +1,32 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+    
+	<link rel="stylesheet" href="{% static 'static/css/style.css' %}">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+<body ng-controller="appCtrl">
+{% csrf_token %}
+
+    <div class="wrapper">
+        <div class="content">
+            <ng-view></ng-view>     
+        </div>
+        <div class="footer">
+            <div class="footer-content">
+                
+            </div>
+        </div>
+    </div>
+    
+
+
+	<script src="{% static 'static/js/build.js' %}"></script>
+
+</body>
+</html>
