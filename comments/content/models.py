@@ -16,10 +16,11 @@ class Comment(models.Model):
     comment_email = models.EmailField()
     comment_homeurl = models.CharField(blank=True, max_length=200)
     comment_text = models.TextField()
-    comment_date = models.DateTimeField()
+    comment_date = models.DateTimeField(auto_now_add = True)
     comment_rating = models.IntegerField()
     comment_isparent = models.BooleanField()
     comment_parentid = models.IntegerField(null=True,blank=True)
+    comment_picture = models.ImageField(null=True, blank=True, upload_to='images', verbose_name='photo')
     #comment_parent = models.ForeignKey(Comment, null=True)
     def __unicode__(self):
         return self.comment_name

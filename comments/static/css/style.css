@@ -65,22 +65,26 @@ body {
 
 .add-comment {
   width: 400px;
-  background-color: green;
-  margin: auto; }
+  background-color: #BCEBC0;
+  margin: auto;
+  border: solid 5px #95FA8B;
+  border-radius: 30px; }
   .add-comment p {
     font-size: 20px;
     text-align: center;
     margin: 10px; }
   .add-comment form {
     width: 100%;
-    text-align: center; }
+    text-align: center;
+    position: relative; }
     .add-comment form label {
       font-size: 18px; }
     .add-comment form input {
       margin: 10px;
       border-radius: 5px;
       height: 25px;
-      font-size: 16px; }
+      font-size: 16px;
+      width: 60%; }
     .add-comment form .comment-textarea {
       position: relative;
       width: 400px;
@@ -97,6 +101,8 @@ body {
         border-radius: 10px;
         font-size: 16px; }
       .add-comment form .comment-textarea .buttons {
+        position: relative;
+        top: -20px;
         padding-top: 0px;
         position: relative;
         padding-left: 250px;
@@ -106,6 +112,8 @@ body {
           margin-bottom: 0; }
         .add-comment form .comment-textarea .buttons button {
           margin-top: 10px; }
+          .add-comment form .comment-textarea .buttons button:hover {
+            cursor: pointer; }
     .add-comment form .captha {
       border: solid 1px black; }
       .add-comment form .captha img {
@@ -119,6 +127,38 @@ body {
       font-size: 16px;
       border-radius: 5px; }
 
+.input-wrong {
+  border-color: red;
+  border-width: 3px;
+  background-color: #F6C4C4; }
+
+.input-invalid {
+  width: 60%;
+  color: red;
+  font-size: 14px;
+  margin: 2px;
+  border: solid 2px red;
+  border-radius: 5px;
+  margin: auto;
+  background-color: #F6C4C4; }
+
+.textarea-invalid {
+  width: 90%;
+  color: red;
+  font-size: 14px;
+  margin: 2px;
+  border: solid 2px red;
+  border-radius: 5px;
+  margin: auto;
+  text-align: left;
+  padding: 10px;
+  background-color: #F6C4C4; }
+  .textarea-invalid ul {
+    list-style-position: inside; }
+    .textarea-invalid ul li {
+      color: red;
+      font-size: 14px; }
+
 .comments {
   width: 100%;
   margin-top: 20px; }
@@ -130,8 +170,10 @@ body {
 .comment-parent {
   width: 100%;
   min-width: 400px;
-  height: 100px;
-  background-color: red; }
+  height: auto;
+  background-color: #C8E8C7;
+  border: solid 2px #7EEB65;
+  border-radius: 5px; }
   .comment-parent .user-data > div {
     display: inline;
     float: left; }
@@ -139,4 +181,64 @@ body {
       float: right; }
   .comment-parent .user-data {
     width: 100%;
-    height: 50px; }
+    height: 50px;
+    line-height: 50px;
+    vertical-align: bottom;
+    background-color: #BCEBC0;
+    border-bottom: solid 2px #7EEB65; }
+    .comment-parent .user-data .user-name {
+      width: 30%;
+      padding-left: 20px; }
+      .comment-parent .user-data .user-name span {
+        font-size: 30px; }
+    .comment-parent .user-data .user-image {
+      width: 50px;
+      height: 50px;
+      line-height: 50px;
+      text-align: center;
+      padding-top: 5px; }
+    .comment-parent .user-data .user-rating {
+      width: 50px;
+      height: 50px;
+      line-height: 50px;
+      vertical-align: middle;
+      text-align: center; }
+      .comment-parent .user-data .user-rating span {
+        font-size: 24px; }
+    .comment-parent .user-data .user-rating-plus,
+    .comment-parent .user-data .user-rating-minus {
+      background: url(like.jpg);
+      background-repeat: no-repeat;
+      width: 75px;
+      height: 26px;
+      margin: 12px 0 12px 0; }
+      .comment-parent .user-data .user-rating-plus:hover,
+      .comment-parent .user-data .user-rating-minus:hover {
+        cursor: pointer; }
+    .comment-parent .user-data .user-rating-plus {
+      background-position-y: -26px; }
+  .comment-parent .user-text {
+    min-height: 50px;
+    padding: 10px;
+    border-bottom: solid 2px #7EEB65; }
+    .comment-parent .user-text .comment-text {
+      width: 90%;
+      margin: auto;
+      background-color: #ffffff;
+      border-radius: 10px; }
+      .comment-parent .user-text .comment-text p {
+        padding: 10px;
+        font-size: 20px; }
+    .comment-parent .user-text .comment-image {
+      text-align: center;
+      padding: 10px;
+      max-width: 80%; }
+  .comment-parent .comment-comment {
+    padding: 5px; }
+    .comment-parent .comment-comment span {
+      font-size: 16px; }
+      .comment-parent .comment-comment span:hover {
+        cursor: pointer; }
+    .comment-parent .comment-comment .add-comment {
+      background-color: #F4E989;
+      border-color: #C0B900; }

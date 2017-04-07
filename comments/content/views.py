@@ -2,13 +2,58 @@ from django.shortcuts import render, render_to_response, redirect
 from django.http.response import HttpResponse, Http404
 import json
 from models import Comment
-from captcha.models import CaptchaStore
-from captcha.helpers import captcha_image_url
+from datetime import datetime
 
 # Create your views here.
 
 def index(request):
     return render(request, 'index.html')
+
+# def like(request, id):
+
+
+
+def postComment(request):
+    print request
+    if 'picture' in request.FILES:
+        print '____Est picture____'
+    if 'file' in request.FILES:
+        print '____Est file____'        
+    c = Comment.objects.create(comment_name = request.POST['name'],
+                                comment_email = request.POST['email'],
+                                comment_text = request.POST['comment'],
+                                comment_rating = 0,
+                                comment_isparent = False)
+    if 'comment_id' in request.POST:
+        print '___comment_id___'
+        print request.POST['comment_id']
+        c.comment_isparent = True
+        c.comment_parentid = request.POST['comment_id']
+        c.save()
+    if 'homeurl' in request.POST:
+        print '___home_url___'
+        c.comment_homeurl = request.POST['homeurl']
+        c.save()
+    if 'picture' in request.FILES:
+        print '___picture___'
+        c.comment_picture = request.FILES['file']
+        c.save()
+
+    return HttpResponse('ok');
+
+
+
+
+
+    # comment_name = models.CharField(max_length=200)
+    # comment_email = models.EmailField()
+    # comment_homeurl = models.CharField(blank=True, max_length=200)
+    # comment_text = models.TextField()
+    # comment_date = models.DateTimeField()
+    # comment_rating = models.IntegerField()
+    # comment_isparent = models.BooleanField()
+    # comment_parentid = models.IntegerField(null=True,blank=True)
+
 
 def getCaptcha(request):
     r = {}
@@ -32,6 +77,8 @@ def getComments(request):
         o['commentText'] = i.comment_text
         o['parent_id'] = i.comment_parentid
         o['comment_id'] = i.id
+        if i.comment_picture:
+            o['comment_picture'] = i.comment_picture.url
         if Comment.objects.filter(comment_parentid = i.id):
             c = Comment.objects.filter(comment_parentid = i.id)
             o['childComments'] = getChildComment(c)

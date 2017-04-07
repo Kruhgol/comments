@@ -1,7 +1,10 @@
 .add-comment {
     width: 400px;
-    background-color: green;
+    background-color: #BCEBC0;
     margin: auto;
+    border: solid 5px #95FA8B;
+    border-radius: 30px;
+    
 
     p {
         font-size: 20px;
@@ -12,6 +15,7 @@
     form{
         width: 100%;
         text-align: center;
+        position: relative;
         label {
             font-size: 18px;
         }
@@ -20,6 +24,7 @@
             border-radius: 5px;
             height: 25px;
             font-size: 16px;
+            width: 60%;
         }
 
         .comment-textarea{
@@ -39,6 +44,8 @@
                 font-size: 16px;
             }
             .buttons {
+                position: relative;
+                top: -20px;
                 padding-top: 0px;
                 position: relative;
                 padding-left: 250px;
@@ -50,6 +57,9 @@
                 }
                 button {
                     margin-top: 10px;
+                    &:hover {
+                        cursor: pointer;
+                    }
                 }
             }        
         }
@@ -71,6 +81,43 @@
             font-size: 16px;
             border-radius: 5px;
 
+        }
+    }
+}
+
+.input-wrong {
+    border-color: red;
+    border-width: 3px;
+    background-color: #F6C4C4;
+}
+
+.input-invalid {
+    width: 60%;
+    color: red;
+    font-size: 14px;
+    margin: 2px;
+    border: solid 2px red;
+    border-radius: 5px; 
+    margin: auto;
+    background-color: #F6C4C4;
+}
+
+.textarea-invalid {
+    width: 90%;
+    color: red;
+    font-size: 14px;
+    margin: 2px;
+    border: solid 2px red;
+    border-radius: 5px; 
+    margin: auto;
+    text-align: left;
+    padding: 10px;
+    background-color: #F6C4C4;
+    ul {
+        list-style-position: inside;
+        li {
+            color: red;
+            font-size: 14px;
         }
     }
 }

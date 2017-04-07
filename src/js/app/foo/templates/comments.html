@@ -9,16 +9,16 @@
                     <span>{{comment.userName}}</span>
                 </div>
                 <div class="user-comment-date">
-                    <p><span>1 августа 2016</span> в <span>17:44</span></p>
+                    <p><span>{{comment.userDate | mydateFilter}}</span> в <span>17:44</span></p>
                 </div>
                 <div class="user-rating">
                     <span>{{comment.userRating}}</span>
                 </div>
-                <div class="user-rating-plus">
-                    <img src="1" alt="">
+                <div class="user-rating-plus" ng-click="like(comment)">
+                    
                 </div>
-                <div class="user-rating-minus">
-                    <img src="2" alt="">
+                <div class="user-rating-minus" ng-click="dislike(comment)">
+
                 </div>
             </div>
             <div class="user-text">
@@ -26,7 +26,13 @@
                     <p>{{comment.commentText}}</p>
                 </div>
                 <div class="comment-image">
-                    <img src="33" alt="">
+                    <img ng-src="{{comment.comment_picture}}" alt="">
+                </div>
+            </div>
+            <div class="comment-comment">
+                <span ng-click="addForm = !addForm">Ответить</span>
+                <div class="add-form" ng-show="addForm">
+                    <addcomment-dir commentId="{{comment.comment_id}}"></addcomment-dir>
                 </div>
             </div>
         </div>

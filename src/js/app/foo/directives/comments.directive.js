@@ -12,8 +12,18 @@ module.exports = function($templateCache){
 
         restrict: 'EA',
 
-        controller: function($scope){
+        controller: function($scope, requestsService){
+            $scope.addForm = false;
 
+            $scope.like = function(comment){
+                requestsService.like(comment.comment_id).then(function(resulr){
+                    comment.userRating = result.data;
+                })
+            }
+
+            $scope.dislike = function(comment){
+                
+            }
 
         },
 

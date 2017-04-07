@@ -339,12 +339,108 @@ PATTERNS:[{gSize:3,lgSize:3,maxFrac:3,minFrac:0,minInt:1,negPre:"-",negSuf:"",po
 },{}],3:[function(require,module,exports){
 'use strict';
 
+module.exports = function($scope, textvalService, requestsService){
+            var textarea = document.getElementById("comment");
+            $scope.addI = function(){
+                var commentText = textarea.value;
+                commentText += '<i></i>'
+                textarea.value = commentText;
+            }
+            $scope.addStrong = function(){
+                var commentText = textarea.value;
+                commentText += '<strong></strong>'
+                textarea.value = commentText;
+            }
+            $scope.addCode = function(){
+                var commentText = textarea.value;
+                commentText += '<code></code>'
+                textarea.value = commentText;
+            }
+            $scope.addA = function(){
+                var commentText = textarea.value;
+                commentText += '<a href="" title=""></a>'
+                textarea.value = commentText;
+            }
+            $scope.fileValid = true;
+            $scope.$on("inputFileChange", function(){
+                var f = document.forms.commentForm.picture.files[0]
+                if(f.size < 3000000 && 
+                    (
+                        f.type == 'image/jpeg' ||
+                        f.type == 'image/jpg' ||
+                        f.type == 'image/png' ||
+                        f.type == 'image/gif'
+                        )){
+                    $scope.fileValid = true;
+                console.log($scope.fileValid)
+                } else {
+                    $scope.fileValid = false;
+                    console.log($scope.fileValid)
+                }   
+                $scope.$apply();          
+
+
+            })
+
+
+            $scope.sendComment = function(comment){
+                var text = textvalService.isvaltext(comment.comment);
+                if(text){
+                    // alert('i' + $scope.commentForm.picture);
+                    // console.log("_____");
+                    // console.log(document.forms.commentForm);
+                    //var fd = new FormData(document.forms.commentForm); //document.forms.commentForm
+                    
+
+                    var fd = new FormData();
+                    fd.append('name', comment.name);
+                    fd.append('email', comment.email);
+                    fd.append('comment', comment.comment);
+
+                    console.log(comment.comment_id);
+                    if(comment.comment_id){
+                        fd.append('comment_id', comment.comment_id)
+                    }
+                    if(document.forms.commentForm.picture.files[0]){
+                        console.log('add1')
+                        fd.append('file', document.forms.commentForm.picture.files[0])                       
+                    }
+
+                    //console.log(fd);
+
+
+                    // $scope.textareaInvalid = false;
+                    // if(commentForm.picture.value){
+                    //     console.log('add1')
+                    //     formData.append('file', commentForm.picture.files[0])                       
+                    // }
+                    // if(commentForm.userurl.value){
+                    //     comment['userurl'] = $scope.comment.userurl;
+                    //     console.log(comment['userurl'])
+                    // }
+
+                    // var request = new XMLHttpRequest();
+                    // request.open("POST", "http://127.0.0.1:8000/postcomment/");
+                    // request.send(fd);
+                    requestsService.postComment(fd).then(function(result){
+                        console.log(result);
+                    })
+                } else {
+                    $scope.textareaInvalid = true;
+                }
+            }
+}
+
+
+},{}],4:[function(require,module,exports){
+'use strict';
+
 module.exports = function($scope){
 
 }
 
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 'use strict';
 
 module.exports = function($scope, requestsService){
@@ -353,38 +449,40 @@ module.exports = function($scope, requestsService){
         $scope.comments = result.data;
         console.log(result.data);
 
-    });
-
-    requestsService.getCaptcha().then(function(result){
-        $scope.captcha = result.data;
-        console.log("__ __ __ __");
-        console.log(result.captcha);
 
     });
+
+    // requestsService.getCaptcha().then(function(result){
+    //     $scope.captcha = result.data;
+    //     console.log("__ __ __ __");
+    //     console.log(result.captcha);
+
+    // });
 
 }
-},{}],5:[function(require,module,exports){
-arguments[4][3][0].apply(exports,arguments)
-},{"dup":3}],6:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
+arguments[4][4][0].apply(exports,arguments)
+},{"dup":4}],7:[function(require,module,exports){
 'use strict';
 
 module.exports = function($templateCache){
     return {
         link: function(scope, element, attribute){
-
+            scope.$watch('comment.comment_id', function(newVal){
+                if (newVal){
+                    scope.comment.comment_id = newVal;
+                }
+            })
+            
         },
 
         restrict: 'EA',
-
-        controller: function($scope){
-
-        },
 
         template: $templateCache.get('addcomment.html')
 
     }
 }
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 module.exports = function($templateCache){
@@ -399,8 +497,18 @@ module.exports = function($templateCache){
 
         restrict: 'EA',
 
-        controller: function($scope){
+        controller: function($scope, requestsService){
+            $scope.addForm = false;
 
+            $scope.like = function(comment){
+                requestsService.like(comment.comment_id).then(function(resulr){
+                    comment.userRating = result.data;
+                })
+            }
+
+            $scope.dislike = function(comment){
+                
+            }
 
         },
 
@@ -412,181 +520,62 @@ module.exports = function($templateCache){
 
     }
 }
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
+
+module.exports = function($rootScope){
+    return {
+        link: function(scope, element, attribute){
+            element.bind("change", function(event){
+                $rootScope.$broadcast("inputFileChange");
+            })
+        },
+
+        restrict: 'A'
+
+    }
+}
+},{}],10:[function(require,module,exports){
 'use strict';
 
 module.exports = angular.module('myApp.foo',[])
     .config(require('./routes.js'))
+    .config(['$httpProvider', require('./service/configHttpProvider')])
     .controller('appCtrl', require('./controllers/app.controller'))
     .controller('startCtrl', require('./controllers/start.controller'))
     .controller('pageCtrl', require('./controllers/page.controller'))
-    .directive('addcommentDir',['$templateCache', require('./directives/addcomment.directive')])
+    .controller('addCommentCtrl', require('./controllers/addComment.controller'))
+    .directive('addcommentDir',['$templateCache','requestsService', require('./directives/addcomment.directive')])
     .directive('commentsDir',['$templateCache', require('./directives/comments.directive')])
+    .directive('inchangeDir', require('./directives/inchange.directive'))
     .factory('requestsService', require('./service/requests.service'))
-
-    .config(['noCAPTCHAProvider', function (noCaptchaProvider) {
-        noCaptchaProvider.setSiteKey('<your site key>');
-        noCaptchaProvider.setTheme('dark');
-        }
-    ])
-  .provider('googleGrecaptcha', function googleGrecaptchaProvider(){
-    var language;
-
-    this.setLanguage = function (_language){
-      language = _language;
-    };
-
-    this.$get = [
-      '$q',
-      '$window',
-      '$document',
-      '$rootScope',
-      function googleGrecaptchaFactory($q, $window, $document, $rootScope){
-        var deferred = $q.defer();
-
-        $window.recaptchaOnloadCallback = function (){
-          $rootScope.$apply(function (){
-            deferred.resolve();
-          });
-        };
-
-        var s = $document[0].createElement('script');
-        var src = 'https://www.google.com/recaptcha/api.js?onload=recaptchaOnloadCallback&render=explicit';
-        s.type = 'application/javascript';
-
-        if (language) {
-          src += '&hl=' + language;
-        }
-        s.src = src;
-        $document[0].body.appendChild(s);
-
-        return deferred.promise;
-    }];
-  })
-  .provider('noCAPTCHA', [
-    'googleGrecaptchaProvider',
-    function noCaptchaProvider(googleGrecaptchaProvider){
-      var siteKey,
-        size,
-        theme;
-
-      this.setSiteKey = function (_siteKey){
-        siteKey = _siteKey;
-      };
-
-      this.setSize = function (_size){
-        size = _size;
-      };
-
-      this.setTheme = function (_theme){
-        theme = _theme;
-      };
-
-      this.setLanguage = function (language){
-        googleGrecaptchaProvider.setLanguage(language);
-      };
-
-      this.$get = function noCaptchaFactory(){
-        return {
-          theme: theme,
-          siteKey: siteKey,
-          size: size
-        };
-      };
-  }])
-  .directive('noCaptcha', [
-    'noCAPTCHA',
-    'googleGrecaptcha',
-    '$document',
-    '$window',
-    function (noCaptcha, googleGrecaptcha, $document, $window){
-      /**
-       * Removes all .pls-container elements
-       *
-       * This is a dirty workaround for fixing reCAPTCHAs bug
-       * which leaves obsolete elements that causes errors
-       * when closing dialogues or changing pages
-       *
-       * This will be removed as soon as Google fixes the bug
-       *
-       * Discussion: https://groups.google.com/forum/#!topic/recaptcha/miaW9qdVIgA
-       */
-      var removePLSContainers = function(){
-        // remove pls-containers
-        var plsContainers = $document[0].getElementsByClassName('pls-container');
-        for(var i = 0; i < plsContainers.length; i++){
-          var parent = plsContainers[i].parentNode;
-          while (parent.firstChild) {
-            parent.removeChild(parent.firstChild);
-          }
-        }
-      };
-
-      return {
-        restrict: 'EA',
-        scope: {
-          gRecaptchaResponse: '=',
-          siteKey: '@',
-          stoken: '@',
-          size: '@',
-          theme: '@',
-          control: '=?',
-          expiredCallback: '=?'
-        },
-        replace: true,
-        link: function (scope, element){
-          scope.control = scope.control || {};
-
-          var widgetId;
-          var grecaptchaCreateParameters;
-          var control = scope.control;
-
-          grecaptchaCreateParameters = {
-            sitekey: scope.siteKey || noCaptcha.siteKey,
-            size: scope.size || noCaptcha.size,
-            theme: scope.theme || noCaptcha.theme,
-            callback: function (r){
-              scope.$apply(function (){
-                scope.gRecaptchaResponse = r;
-              });
-            },
-            'expired-callback': function (){
-              if(scope.expiredCallback && typeof (scope.expiredCallback) === 'function') {
-                scope.$apply(function (){
-                  scope.expiredCallback();
-                });
-              }
+    .factory('textvalService', require('./service/textval.service'))
+    .filter('mydateFilter', function(){
+        return function(param){
+            var months = {
+                '01':'января',
+                '02':'февраля',
+                '03':'марта',
+                '04':'апреля',
+                '05':'мая',
+                '06':'июня',
+                '07':'июля',
+                '08':'августа',
+                '09':'сентября',
+                '10':'октября',
+                '11':'ноября',
+                '12':'декабря'
             }
-          };
-
-          if (scope.stoken) {
-            grecaptchaCreateParameters.stoken = scope.stoken;
-          }
-
-          if(!grecaptchaCreateParameters.sitekey) {
-            throw new Error('Site Key is required');
-          }
-
-          googleGrecaptcha.then(function (){
-            widgetId = $window.grecaptcha.render(
-              element[0],
-              grecaptchaCreateParameters
-            );
-            control.reset = function (){
-              $window.grecaptcha.reset(widgetId);
-              scope.gRecaptchaResponse = null;
-            };
-          });
-
-          scope.$on('$destroy', function (){
-            if($window.grecaptcha) {
-              $window.grecaptcha.reset(widgetId);
+            var getMonth = function(d){
+                return months[d.slice(6,8)]
             }
-            removePLSContainers();
-          });
+
+            var regTime = /\d{2}:\d{2}/;
+            var date = param.slice(9, 11) + ' ' + getMonth(param)+ ' ' + param.slice(1, 5);
+            var time = param.match(regTime)
+            var value = date + ' в ' + time;
+            return value;
         }
-      };
-    }]);
+    })
 
 
 
@@ -597,7 +586,7 @@ module.exports = angular.module('myApp.foo',[])
  //    .factory('requestsService', require('./service/requests.service'))
  //    .value('userConfig', require('./service/user.service'))
 
-},{"./controllers/app.controller":3,"./controllers/page.controller":4,"./controllers/start.controller":5,"./directives/addcomment.directive":6,"./directives/comments.directive":7,"./routes.js":9,"./service/requests.service":10}],9:[function(require,module,exports){
+},{"./controllers/addComment.controller":3,"./controllers/app.controller":4,"./controllers/page.controller":5,"./controllers/start.controller":6,"./directives/addcomment.directive":7,"./directives/comments.directive":8,"./directives/inchange.directive":9,"./routes.js":11,"./service/configHttpProvider":12,"./service/requests.service":13,"./service/textval.service":14}],11:[function(require,module,exports){
 'use strict';
 
 module.exports = function($routeProvider){
@@ -620,14 +609,60 @@ module.exports = function($routeProvider){
     //  templateUrl: "home.html",
     //  controller: "homeCtrl"
     // })
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
+module.exports = function($httpProvider) {
+                    $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+                    $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+                    $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+                    $httpProvider.defaults.transformRequest = [
+                        function(data) {
+                            /**
+                             * The workhorse; converts an object to x-www-form-urlencoded serialization.
+                             * @param {Object} obj
+                             * @return {String}
+                             */
+                            var param = function(obj) {
+                                var query = '';
+                                var name, value, fullSubName, subName, subValue, innerObj, i;
+                                for (name in obj) {
+                                    value = obj[name];
+                                    if (value instanceof Array) {
+                                        for (i = 0; i < value.length; ++i) {
+                                            subValue = value[i];
+                                            fullSubName = name + '[' + i + ']';
+                                            innerObj = {};
+                                            innerObj[fullSubName] = subValue;
+                                            query += param(innerObj) + '&';
+                                        }
+                                    } else if (value instanceof Object) {
+                                        for (subName in value) {
+                                            subValue = value[subName];
+                                            fullSubName = name + '[' + subName + ']';
+                                            innerObj = {};
+                                            innerObj[fullSubName] = subValue;
+                                            query += param(innerObj) + '&';
+                                        }
+                                    } else if (value !== undefined && value !== null) {
+                                        query += encodeURIComponent(name) + '=' + encodeURIComponent(value) + '&';
+                                    }
+                                }
+                                return query.length ? query.substr(0, query.length - 1) : query;
+                            };
+                            return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
+                        }
+                    ];
+                }
+            
+},{}],13:[function(require,module,exports){
 module.exports = function($http, $rootScope){
     return new Request($http, $rootScope);
 }
 
 function Request($http, $rootScope){
     var getComments = '/getcomments',
-        getCaptcha = '/getcaptcha';
+        getCaptcha = '/getcaptcha',
+        postComment = '/postcomment',
+        like = '/like/';
 
     //controller's GET requests
 
@@ -641,8 +676,155 @@ function Request($http, $rootScope){
         return $http.get(adr);
     };
 
+    this.getLike = function(id) {
+        var adr = like + id + '/';
+        return $http.get(adr);
+    };
+
+    this.postComment = function(fd) {
+        var adr = postComment + '/';
+        // console.log("___request___");
+        // console.log(answer);
+        return $http({
+            url: adr,
+            method: 'POST',
+            data: fd,
+            //assign content-type as undefined, the browser
+            //will assign the correct boundary for us
+            headers: { 'Content-Type': undefined},
+            //prevents serializing payload.  don't do it.
+            transformRequest: angular.identity
+
+        });//.post(adr, answer);
+    };
+
+
+
 }
-},{}],11:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
+module.exports = function(){
+    return new Textval();
+}
+
+function Textval(){
+
+    // функция преобразования строки где неразрешенные теги преобразуются в текст
+    var changeStr = function(str){
+        // проверка на наличие скриптов, если есть то предупреждение
+        //console.log(str);
+        // регулярное выражение на проверку наличия скриптов
+        regScript = /^.*<script>.*$/g ;
+        var isScript = regScript.test(str);
+        if (isScript){
+            return false;
+        } else {
+            // заменяем все запрещенные теги на текст
+            str = str.replace(/</g, "&lt;");  
+            str = str.replace(/>/g, "&gt;");
+            // разрешенные теги оставляем как теги
+            str = str.replace(/&lt;code&gt;/g, "<code>");
+            str = str.replace(/&lt;\/code&gt;/g, "</code>");
+            str = str.replace(/&lt;strong&gt;/g, "<strong>");
+            str = str.replace(/&lt;\/strong&gt;/g, "</strong>");
+            str = str.replace(/&lt;i&gt;/g, "<i>");
+            str = str.replace(/&lt;\/i&gt;/g, "</i>");
+            str = str.replace(/&lt;a/g, "<a");
+            str = str.replace(/<a.*"&gt;/g, function(p1){
+                p1 = p1.replace(/&gt;/g, '>')
+                return p1;
+            });
+            str = str.replace(/&lt;\/a&gt;/g, "</a>");
+        }
+        // возвращем преобразованную строку 
+        return str;
+    }
+    // функция проверки строки на валидацию
+    var isTextValide = function(str) {
+        // регулярное выражение на наличие разрешенных тегов
+        var regResolvedTeg=/<code>(?=.*<\/code>)|<i>(?=.*<\/i>)|<strong>(?=.*<\/strong>)|<a\s*href=\"[a-zA-Z\/0-9]*\"\stitle=\"[^'"]*\">(?=.*<\/a>)/g ;
+        // регулярное выражение для валидности вложеных тегов
+        regValidChildTeg = /^<([asci]).*>.*<([asci]).*>(?=.*<\/\2.*>).*<\/\1.*>$/;
+        // регулярное выражение на проверку вложеного не закрытого тега
+        regChildNotCloseTeg = /^<([asci]).*>.*<\/?([a-z0-9]*)>(?!.*<\/\2>).*<\/\1.*>$/;
+        // регулярное выражение на проверку тегов в строке
+        regIsTegInString = /^.*<\/?[asci].*>.*$/g;
+
+        // проверяем на наличие тегов, если тегов нет то возвращаем 1
+        if (str.match(regIsTegInString) == null){
+          return true;
+        }
+
+        // получаем массив разрешенных тегов которые присутствуют в строке
+        tegsArr = str.match(regResolvedTeg);
+        if (tegsArr == null){
+            return false;
+        }
+
+        // reg = /^.*(<i>.*(<i>)+.*<\/i>).*$/g
+        // isRepeatTeg = reg.test(str);
+        // if (isRepeatTeg){
+        //     alert("Текст не валиден!ddddd")
+        //     return false;
+        // }
+
+        //созададим два массива
+        //массив регулярных выражений для нахождения разрешенных тегов и их вложений
+        var arr=[];
+        //массив регулярных выражений на проверку валидности содержимого тегов
+        var arrValidate = [];
+        for (var i=0;i<tegsArr.length;i++){
+            if(tegsArr[i][1]==='a'){
+                arr.push(new RegExp(tegsArr[i]+'.*</a>', "g"));
+                arrValidate.push(new RegExp('^'+tegsArr[i]+'.*<([a-z0-9]*)>(?!.*[(</\\1>)]).*'+'.*</a>$'));
+            } else {
+                arr.push(new RegExp(tegsArr[i]+('.*</'+tegsArr[i].substring(1)),"g"))
+                arrValidate.push(new RegExp('^'+tegsArr[i]+'.*<([a-z0-9]*)>(?!.*</\\1>).*</'+tegsArr[i].substring(1)+'$'));
+            }
+        }    
+        // массив разрешенных тегов с их содержимым
+        var strArr = [];
+        for (var i=0; i<arr.length; i++){
+            strArr[i] = str.match(arr[i]);
+        }
+        // проверка элементов массива strArr на наличие вложеных тегов
+        var strValidateArr = [];
+        for (var i=0; i<strArr.length; i++){
+            if(regValidChildTeg.test(strArr[i])){
+                // если есть вложеный валидный тег то ьольше его не проверяем
+                continue;
+            } else {
+                //  если вложеного тега нет то проверяем элемент
+                strValidateArr.push(strArr[i])
+            }
+        }
+        // если тегов нет то возвращаем 1
+        if(!strValidateArr[0]){
+            return true;
+        }
+        // проверяем содержимое тегов на валидность
+        for (var i=0; i<strValidateArr.length; i++){
+            if(regChildNotCloseTeg.test(strValidateArr[i])){
+                return false;
+            }
+        }
+        // если строка валидна то возвращаем 1
+        return true;
+
+    }
+
+    this.isvaltext = function(str){
+        str = changeStr(str);
+        if(str){
+            if(isTextValide(str)){
+                return str;
+            } else {
+                return false;
+            }
+        }
+    }
+
+}
+},{}],15:[function(require,module,exports){
 'use strict';
 
 module.exports =
@@ -653,7 +835,7 @@ module.exports =
         //templates
         require('../../tmp/templates').name,
     ])
-},{"../../tmp/templates":13,"./foo":8}],12:[function(require,module,exports){
+},{"../../tmp/templates":17,"./foo":10}],16:[function(require,module,exports){
 'use strict';
 
 // browserify-shim dependencies
@@ -663,9 +845,9 @@ require('angular-route');
 // application initialization
 require('./app');
 
-},{"./app":11,"angular":2,"angular-route":1}],13:[function(require,module,exports){
-module.exports = angular.module('templates', []).run(['$templateCache', function($templateCache) {$templateCache.put('addcomment.html','<div class="add-comment">\r\n    <p>Send comment</p>\r\n    <form name="addCommentForm">\r\n        <label for="name">Your name:</label><br/>\r\n        <input type="text" name="userName" id="name" placeholder="Enter your name"><br/>\r\n\r\n        <label for="email">Your email:</label><br/>\r\n        <input type="text" name="userEmail" id="email" placeholder="Enter your email"><br/>\r\n\r\n        <label for="url">Your homepage url:</label><br/>\r\n        <input type="text" name="userUrl" id="url" placeholder="Enter your homepage url"><br/>\r\n        <div class="comment-textarea">\r\n                <label for="comment">Enter your comment:</label><br/>  \r\n                <textarea name = "userComment" id="comment" placeholder="Enter your comment"></textarea>\r\n                <div class="buttons">\r\n                    <p>You can use tags:</p>\r\n                    <button>&lt;i&gt;</button><br/>\r\n                    <button>&lt;strong&gt;</button><br/>\r\n                    <button>&lt;a&gt;</button><br/>\r\n                    <button>&lt;code&gt;</button><br/>\r\n                </div>    \r\n        </div>   \r\n        <div class="captha">\r\n            <no-captcha\r\n                g-recaptcha-response="gRecaptchaResponse"\r\n                theme=\'light\'\r\n                control="noCaptchaControl"\r\n                site-key="<your site key>">\r\n            </no-captcha>\r\n  <!--           <img src="dd" alt="dd">\r\n            <input type="text" name="captha">\r\n            <div class="clear-both"></div> -->\r\n        </div> \r\n        <button class="send">Send comment!</button>    \r\n    \r\n    </form>\r\n</div>\r\n');
-$templateCache.put('comments.html','<div class="comments">\r\n    <div class="comment" ng-repeat="comment in comments">\r\n        <div class="comment-parent">\r\n            <div class="user-data">\r\n                <div class="user-image">\r\n                    <img src="media/user.png" height="40px;" alt="user">\r\n                </div>\r\n                <div class="user-name">\r\n                    <span>{{comment.userName}}</span>\r\n                </div>\r\n                <div class="user-comment-date">\r\n                    <p><span>1 \u0430\u0432\u0433\u0443\u0441\u0442\u0430 2016</span> \u0432 <span>17:44</span></p>\r\n                </div>\r\n                <div class="user-rating">\r\n                    <span>{{comment.userRating}}</span>\r\n                </div>\r\n                <div class="user-rating-plus">\r\n                    <img src="1" alt="">\r\n                </div>\r\n                <div class="user-rating-minus">\r\n                    <img src="2" alt="">\r\n                </div>\r\n            </div>\r\n            <div class="user-text">\r\n                <div class="comment-text">\r\n                    <p>{{comment.commentText}}</p>\r\n                </div>\r\n                <div class="comment-image">\r\n                    <img src="33" alt="">\r\n                </div>\r\n            </div>\r\n        </div>\r\n        <div class="comments-child">\r\n            <comments-dir comments="{{comment.childComments}}"></comments-dir>\r\n        </div>\r\n    </div>\r\n</div>');
+},{"./app":15,"angular":2,"angular-route":1}],17:[function(require,module,exports){
+module.exports = angular.module('templates', []).run(['$templateCache', function($templateCache) {$templateCache.put('addcomment.html','<div class="add-comment">\r\n    <p>\u041E\u0441\u0442\u0430\u0432\u0438\u0442\u044C \u043A\u043E\u043C\u043C\u0435\u043D\u0442\u0430\u0440\u0438\u0439</p>\r\n\r\n    <form name="commentForm" novalidate ng-controller="addCommentCtrl" enctype="multipart/form-data">\r\n        <label for="name">\u0412\u0430\u0448\u0435 \u0438\u043C\u044F:</label><br/>\r\n        <input \r\n            type="text" \r\n            id="name"\r\n            name="name" \r\n            ng-pattern="/^[a-zA-Z0-9]*$/"\r\n            required\r\n            ng-model="comment.name"\r\n            ng-minlength="5" \r\n            ng-maxlength="15" \r\n            ng-class="{\'input-wrong\': !commentForm.name.$pristine && (commentForm.name.$error.minlength || commentForm.name.$error.maxlength || commentForm.name.$invalid) }"\r\n            placeholder="Enter your name"><br/>\r\n            <div class="input-invalid" ng-show="!commentForm.name.$pristine && commentForm.name.$invalid">\r\n                \u041F\u043E\u043B\u0435 \u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u043E \u0434\u043B\u044F \u0437\u0430\u043F\u043E\u043B\u0435\u043D\u0438\u044F \u0438 \u0434\u043E\u043B\u0436\u043D\u043E \u0441\u043E\u0434\u0435\u0440\u0436\u0430\u0442\u044C \u043B\u0438\u0448\u044C  \u0431\u0443\u043A\u0432\u044B \u043B\u0430\u0442\u0438\u043D\u0441\u043A\u043E\u0433\u043E \u0430\u043B\u0444\u0430\u0432\u0438\u0442\u0430 \u0438 \u0446\u0438\u0444\u0440\u044B!\r\n            </div>\r\n            <div class="input-invalid" ng-show="!commentForm.name.$pristine && commentForm.name.$error.minlength">\r\n                \u041C\u0438\u043D\u0438\u043C\u0430\u043B\u044C\u043D\u0430\u044F \u0434\u043B\u0438\u043D\u0430 - 5 \u0441\u0438\u043C\u0432\u043E\u043B\u043E\u0432!\r\n            </div>\r\n            <div class="input-invalid" ng-show="!commentForm.name.$pristine && commentForm.name.$error.maxlength">\r\n                \u041C\u0430\u043A\u0441\u0438\u043C\u0430\u043B\u044C\u043D\u0430\u044F \u0434\u043B\u0438\u043D\u0430 - 15 \u0441\u0438\u043C\u0432\u043E\u043B\u043E\u0432!\r\n            </div>\r\n        <label for="email">\u0412\u0430\u0448 email:</label><br/>\r\n        <input type="text" \r\n            name="email" \r\n            type="email"\r\n            id="email" \r\n            ng-pattern="/^([a-z0-9_\\.-]+)@([a-z0-9_\\.-]+)\\.([a-z\\.]{2,6})$/"\r\n            required\r\n            ng-model="comment.email"\r\n            ng-maxlength="50"\r\n            ng-class="{\'input-wrong\': !commentForm.email.$pristine && (commentForm.email.$error.minlength || commentForm.email.$error.maxlength || commentForm.email.$invalid) }"\r\n            placeholder="Enter your email"><br/>\r\n            <div class="input-invalid" ng-show="!commentForm.email.$pristine && commentForm.email.$invalid">\r\n                \u041F\u043E\u043B\u0435 \u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u043E \u0434\u043B\u044F \u0437\u0430\u043F\u043E\u043B\u0435\u043D\u0438\u044F \u0438 \u0434\u043E\u043B\u0436\u043D\u043E \u0441\u043E\u043E\u0442\u0432\u0435\u0442\u0441\u0442\u0432\u043E\u0432\u0430\u0442\u044C "email"!\r\n            </div>\r\n            <div class="input-invalid" ng-show="!commentForm.email.$pristine && commentForm.email.$error.maxlength">\r\n                \u041C\u0430\u043A\u0441\u0438\u043C\u0430\u043B\u044C\u043D\u0430\u044F \u0434\u043B\u0438\u043D\u0430 - 50 \u0441\u0438\u043C\u0432\u043E\u043B\u043E\u0432!\r\n            </div>\r\n\r\n        <label for="homeurl">\u0412\u0430\u0448 homepage url:</label><br/>\r\n        <input type="text" \r\n            name="homeurl" \r\n            ng-pattern="/^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$/" \r\n            id="homeurl"\r\n            ng-model="comment.homeurl" \r\n            ng-class="{\'input-wrong\': !commentForm.homeurl.$valid}"\r\n            placeholder="Enter your homepage url"><br/>\r\n            <div class="input-invalid" ng-show="!commentForm.homeurl.$pristine && commentForm.homeurl.$invalid">\r\n                \u041F\u043E\u043B\u0435 \u0434\u043E\u043B\u0436\u043D\u043E \u0441\u043E\u043E\u0442\u0432\u0435\u0442\u0441\u0442\u0432\u043E\u0432\u0430\u0442\u044C \u0442\u0438\u043F\u0443 "url"!\r\n            </div>\r\n\r\n        <div class="comment-textarea">\r\n                <label for="comment">\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0412\u0430\u0448 \u043A\u043E\u043C\u043C\u0435\u043D\u0442\u0430\u0440\u0438\u0439:</label><br/>  \r\n                <textarea \r\n                    name="comment" \r\n                    id="comment" \r\n                    ng-required\r\n                    ng-model="comment.comment" \r\n                    ng-class="{\'input-wrong\':textareaInvalid}"\r\n                    placeholder="Enter your comment"></textarea>\r\n                <div class="buttons">\r\n                    <p>\u0412\u044B \u043C\u043E\u0436\u0435\u0442\u0435 \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u044C \u0442\u0435\u0433\u0438:</p>\r\n                    <button ng-click="addI()">&lt;i&gt;</button><br/>\r\n                    <button ng-click="addStrong()">&lt;strong&gt;</button><br/>\r\n                    <button ng-click="addCode()">&lt;code&gt;</button><br/>\r\n                    <button ng-click="addA()">&lt;a href="" title=""&gt;</button><br/>\r\n                </div>    \r\n        </div>\r\n        <div class="textarea-invalid" ng-show="textareaInvalid">\r\n            \u0422\u0435\u043A\u0441\u0442 \u0412\u0430\u0448\u0435\u0433\u043E \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u044F \u043D\u0435 \u0432\u0430\u043B\u0438\u0434\u0435\u043D! \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u044B\u0435 \u043F\u0440\u0438\u0447\u0438\u043D\u044B:\r\n                <ul>\r\n                    <li>\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u043D\u0438\u0435 \u0442\u0435\u0433\u0430 &lt;script&gt;</li>\r\n                    <li>\u041D\u0435\u043A\u043E\u0440\u0435\u043A\u0442\u043D\u0430\u044F \u0432\u043B\u043E\u0436\u0435\u043D\u043D\u043E\u0441\u0442\u044C \u0442\u0435\u0433\u043E\u0432</li>\r\n                    <li>\u041F\u0440\u0438\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u044E\u0442 \u043D\u0435 \u0437\u0430\u043A\u0440\u044B\u0442\u044B\u0435 \u0442\u0435\u0433\u0438</li>\r\n                </ul>\r\n            \u041D\u0430\u043F\u043E\u043C\u0438\u043D\u0430\u0435\u043C, \u0447\u0442\u043E \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u044C \u043C\u043E\u0436\u043D\u043E \u043B\u0438\u0448\u044C \u0442\u0435\u0433\u0438: &lt;i&gt;, &lt;strong&gt;, &lt;code&gt;, &lt;a href="" title=""&gt;\r\n        </div>   \r\n        <label for="picture">\u0417\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044C \u043A\u0430\u0440\u0442\u0438\u043D\u043A\u0443:</label>\r\n        <input type="file" \r\n            name="picture"\r\n            id="picture" \r\n            ng-model="comment.picture"\r\n            inchange-dir="isFileValide">\r\n        <div class="input-invalid" ng-show="!fileValid">\r\n                \u0424\u0430\u0439\u043B \u0434\u043E\u043B\u0436\u0435\u043D \u0431\u044B\u0442\u044C \u0440\u0430\u0437\u043C\u0435\u0440\u043E\u043C \u043C\u0435\u043D\u044C\u0448\u0435 \u0447\u0435\u043C 3 \u043C\u0435\u0433\u0430\u0431\u0430\u0439\u0442\u0430. \u0414\u043E\u043F\u0443\u0441\u0442\u0438\u043C\u044B\u0435 \u0444\u043E\u0440\u043C\u0430\u0442\u044B - JPG, GIF, PNG!\r\n        </div>\r\n        <button \r\n            class="send" \r\n            ng-disabled="commentForm.$invalid && fileValid"\r\n            ng-click="sendComment(comment)">\u041E\u0441\u0442\u0430\u0432\u0438\u0442\u044C \u043A\u043E\u043C\u043C\u0435\u043D\u0442\u0430\u0440\u0438\u0439!</button>    \r\n    \r\n    </form>\r\n</div>\r\n');
+$templateCache.put('comments.html','<div class="comments">\r\n    <div class="comment" ng-repeat="comment in comments">\r\n        <div class="comment-parent">\r\n            <div class="user-data">\r\n                <div class="user-image">\r\n                    <img src="media/user.png" height="40px;" alt="user">\r\n                </div>\r\n                <div class="user-name">\r\n                    <span>{{comment.userName}}</span>\r\n                </div>\r\n                <div class="user-comment-date">\r\n                    <p><span>{{comment.userDate | mydateFilter}}</span> \u0432 <span>17:44</span></p>\r\n                </div>\r\n                <div class="user-rating">\r\n                    <span>{{comment.userRating}}</span>\r\n                </div>\r\n                <div class="user-rating-plus" ng-click="like(comment)">\r\n                    \r\n                </div>\r\n                <div class="user-rating-minus" ng-click="dislike(comment)">\r\n\r\n                </div>\r\n            </div>\r\n            <div class="user-text">\r\n                <div class="comment-text">\r\n                    <p>{{comment.commentText}}</p>\r\n                </div>\r\n                <div class="comment-image">\r\n                    <img ng-src="{{comment.comment_picture}}" alt="">\r\n                </div>\r\n            </div>\r\n            <div class="comment-comment">\r\n                <span ng-click="addForm = !addForm">\u041E\u0442\u0432\u0435\u0442\u0438\u0442\u044C</span>\r\n                <div class="add-form" ng-show="addForm">\r\n                    <addcomment-dir commentId="{{comment.comment_id}}"></addcomment-dir>\r\n                </div>\r\n            </div>\r\n        </div>\r\n        <div class="comments-child">\r\n            <comments-dir comments="{{comment.childComments}}"></comments-dir>\r\n        </div>\r\n    </div>\r\n</div>');
 $templateCache.put('page.html','<addcomment-dir></addcomment-dir>\r\n\r\n<comments-dir comments="{{comments}}"></comments-dir>\r\n\r\n<div class="pages">\r\n    <a href="#/page/1">1</a>\r\n    <a href="#/page/2">2</a>\r\n    <a href="#/page/3">3</a>\r\n    <a href="#/page/4">4</a>\r\n</div>');
 $templateCache.put('start.html','<div class="add-comment">\r\n    <p>Send comment</p>\r\n    <form name="addCommentForm">\r\n        <label for="name">Your name:</label><br/>\r\n        <input type="text" name="userName" id="name" placeholder="Enter your name"><br/>\r\n\r\n        <label for="email">Your email:</label><br/>\r\n        <input type="text" name="userEmail" id="email" placeholder="Enter your email"><br/>\r\n\r\n        <label for="url">Your homepage url:</label><br/>\r\n        <input type="text" name="userUrl" id="url" placeholder="Enter your homepage url"><br/>\r\n        <div class="comment-textarea">\r\n                <label for="comment">Enter your comment:</label><br/>  \r\n                <textarea name = "userComment" id="comment" placeholder="Enter your comment"></textarea>\r\n                <div class="buttons">\r\n                    <p>You can use tags:</p>\r\n                    <button>&lt;i&gt;</button><br/>\r\n                    <button>&lt;strong&gt;</button><br/>\r\n                    <button>&lt;a&gt;</button><br/>\r\n                    <button>&lt;code&gt;</button><br/>\r\n                </div>    \r\n        </div>   \r\n        <div class="captha">\r\n            <img src="dd" alt="dd">\r\n            <input type="text" name="captha">\r\n            <div class="clear-both"></div>\r\n        </div> \r\n        <button class="send">Send comment!</button>    \r\n    \r\n    </form>\r\n</div>\r\n\r\n<div class="comments">\r\n    <div class="comment">\r\n        <div class="comment-parent">\r\n            <div class="user-data">\r\n                <div class="user-image">\r\n                    <img src="1" alt="">\r\n                </div>\r\n                <div class="user-name">\r\n                    <span>Nikolay Krugol</span>\r\n                </div>\r\n                <div class="user-comment-date">\r\n                    <p><span>1 \u0430\u0432\u0433\u0443\u0441\u0442\u0430 2016</span> \u0432 <span>17:44</span></p>\r\n                </div>\r\n                <div class="user-rating">\r\n                    10\r\n                </div>\r\n                <div class="user-rating-plus">\r\n                    <img src="1" alt="">\r\n                </div>\r\n                <div class="user-rating-minus">\r\n                    <img src="2" alt="">\r\n                </div>\r\n            </div>\r\n            <div class="user-text">\r\n                <div class="comment-text">\r\n                    <p>lsfkfsfnkls dl fsjdf  djsgj sgg jksg jkg s gjkg js gjs gjk gjsgj gj gsjk gjks gkj sgj jkg jksg jgjs gkjg jks gjks gjsjg jg jsg kj gskjg jks gjks gkj gkjg kjsg jkg kjsg sjgkjs gjsdg sd gosdg lsjdg ljsdg lsdgj dsg jds jlg jdlsg ljsdg jlg dsgjsd glsd</p>\r\n                </div>\r\n                <div class="comment-image">\r\n                    <img src="33" alt="">\r\n                </div>\r\n            </div>\r\n        </div>\r\n        <div class="comments-child">\r\n            \r\n\r\n            <div class="comment">\r\n                <div class="comment-parent">\r\n                    <div class="user-data">\r\n                        <div class="user-image">\r\n                            <img src="1" alt="">\r\n                        </div>\r\n                        <div class="user-name">\r\n                            <span>Nikolay Krugol</span>\r\n                        </div>\r\n                        <div class="user-comment-date">\r\n                            <p><span>1 \u0430\u0432\u0433\u0443\u0441\u0442\u0430 2016</span> \u0432 <span>17:44</span></p>\r\n                        </div>\r\n                        <div class="user-rating">\r\n                            10\r\n                        </div>\r\n                        <div class="user-rating-plus">\r\n                            <img src="1" alt="">\r\n                        </div>\r\n                        <div class="user-rating-minus">\r\n                            <img src="2" alt="">\r\n                        </div>\r\n                    </div>\r\n                    <div class="user-text">\r\n                        <div class="comment-text">\r\n                            <p>lsfkfsfnkls dl fsjdf  djsgj sgg jksg jkg s gjkg js gjs gjk gjsgj gj gsjk gjks gkj sgj jkg jksg jgjs gkjg jks gjks gjsjg jg jsg kj gskjg jks gjks gkj gkjg kjsg jkg kjsg sjgkjs gjsdg sd gosdg lsjdg ljsdg lsdgj dsg jds jlg jdlsg ljsdg jlg dsgjsd glsd</p>\r\n                        </div>\r\n                        <div class="comment-image">\r\n                            <img src="33" alt="">\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n                <div class="comments-child">\r\n                    \r\n                </div>\r\n            </div>\r\n\r\n\r\n\r\n        </div>\r\n    </div>\r\n</div>');}]);
-},{}]},{},[12]);
+},{}]},{},[16]);

@@ -13,8 +13,10 @@
 .comment-parent {
     width: 100%;
     min-width: 400px;
-    height:100px;
-    background-color: red;
+    height: auto;
+    background-color: #C8E8C7;
+    border: solid 2px #7EEB65;
+    border-radius: 5px;
     .user-data>div {
         display: inline;
         float: left;
@@ -27,6 +29,89 @@
     .user-data {
         width: 100%;
         height: 50px;
+        line-height: 50px;
+        vertical-align: bottom;
+        background-color: #BCEBC0;
+        border-bottom: solid 2px #7EEB65;
+
+        .user-name {
+            width: 30%;
+            padding-left: 20px;
+            span {
+                font-size: 30px;
+            }
+        }
+
+        .user-image {
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            padding-top: 5px;
+        }
+
+        .user-rating {
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            vertical-align: middle;
+            text-align: center;
+            span {
+                font-size: 24px;
+            }
+        }
+
+        .user-rating-plus,
+        .user-rating-minus {
+            background: url(like.jpg);
+            background-repeat: no-repeat;
+            width: 75px;
+            height: 26px;
+            margin: 12px 0 12px 0;
+            &:hover {
+                cursor: pointer;
+            }
+        }
+        .user-rating-plus {
+            background-position-y: -26px;
+        }
+
+    }
+
+    .user-text {
+        min-height: 50px;
+        padding: 10px;
+        border-bottom: solid 2px #7EEB65;
+        .comment-text {
+            width: 90%;
+            margin: auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            p{
+                padding: 10px;
+                font-size: 20px;
+            }
+
+        }
+        .comment-image {
+            text-align: center;
+            padding: 10px;
+            max-width: 80%;
+        }
+    }
+
+    .comment-comment {
+        padding: 5px;
+        span {
+            font-size: 16px;
+            &:hover {
+                cursor: pointer;
+            }
+        }
+        .add-comment {
+            background-color: #F4E989;
+            border-color: #C0B900;
+        }
     }
 }
 

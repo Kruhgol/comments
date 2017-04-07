@@ -21,5 +21,9 @@ import views
 urlpatterns = [
     url(r'^$', views.index),
     url(r'^getcomments/', views.getComments),
-    url(r'^getcaptcha/', views.getCaptcha)
+    url(r'^getcaptcha/', views.getCaptcha),
+    url(r'^postcomment/', views.postComment),
+
 ]
+
+    # url(r'^like/((?P<id>[^/]+)', views.like),

@@ -10,10 +10,10 @@ class CommentAdmin(admin.ModelAdmin):
                 'comment_email',
                 'comment_homeurl',
                 'comment_text',
-                'comment_date',
                 'comment_rating',
                 'comment_isparent',
-                'comment_parentid'
+                'comment_parentid',
+                'comment_picture'
             ]
 
 

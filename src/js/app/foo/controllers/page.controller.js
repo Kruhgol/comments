@@ -6,13 +6,14 @@ module.exports = function($scope, requestsService){
         $scope.comments = result.data;
         console.log(result.data);
 
-    });
-
-    requestsService.getCaptcha().then(function(result){
-        $scope.captcha = result.data;
-        console.log("__ __ __ __");
-        console.log(result.captcha);
 
     });
+
+    // requestsService.getCaptcha().then(function(result){
+    //     $scope.captcha = result.data;
+    //     console.log("__ __ __ __");
+    //     console.log(result.captcha);
+
+    // });
 
 }

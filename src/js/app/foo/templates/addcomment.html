@@ -1,37 +1,97 @@
 <div class="add-comment">
-    <p>Send comment</p>
-    <form name="addCommentForm">
-        <label for="name">Your name:</label><br/>
-        <input type="text" name="userName" id="name" placeholder="Enter your name"><br/>
+    <p>Оставить комментарий</p>
 
-        <label for="email">Your email:</label><br/>
-        <input type="text" name="userEmail" id="email" placeholder="Enter your email"><br/>
+    <form name="commentForm" novalidate ng-controller="addCommentCtrl" enctype="multipart/form-data">
+        <label for="name">Ваше имя:</label><br/>
+        <input 
+            type="text" 
+            id="name"
+            name="name" 
+            ng-pattern="/^[a-zA-Z0-9]*$/"
+            required
+            ng-model="comment.name"
+            ng-minlength="5" 
+            ng-maxlength="15" 
+            ng-class="{'input-wrong': !commentForm.name.$pristine && (commentForm.name.$error.minlength || commentForm.name.$error.maxlength || commentForm.name.$invalid) }"
+            placeholder="Enter your name"><br/>
+            <div class="input-invalid" ng-show="!commentForm.name.$pristine && commentForm.name.$invalid">
+                Поле обязательно для заполения и должно содержать лишь  буквы латинского алфавита и цифры!
+            </div>
+            <div class="input-invalid" ng-show="!commentForm.name.$pristine && commentForm.name.$error.minlength">
+                Минимальная длина - 5 символов!
+            </div>
+            <div class="input-invalid" ng-show="!commentForm.name.$pristine && commentForm.name.$error.maxlength">
+                Максимальная длина - 15 символов!
+            </div>
+        <label for="email">Ваш email:</label><br/>
+        <input type="text" 
+            name="email" 
+            type="email"
+            id="email" 
+            ng-pattern="/^([a-z0-9_\.-]+)@([a-z0-9_\.-]+)\.([a-z\.]{2,6})$/"
+            required
+            ng-model="comment.email"
+            ng-maxlength="50"
+            ng-class="{'input-wrong': !commentForm.email.$pristine && (commentForm.email.$error.minlength || commentForm.email.$error.maxlength || commentForm.email.$invalid) }"
+            placeholder="Enter your email"><br/>
+            <div class="input-invalid" ng-show="!commentForm.email.$pristine && commentForm.email.$invalid">
+                Поле обязательно для заполения и должно соответствовать "email"!
+            </div>
+            <div class="input-invalid" ng-show="!commentForm.email.$pristine && commentForm.email.$error.maxlength">
+                Максимальная длина - 50 символов!
+            </div>
 
-        <label for="url">Your homepage url:</label><br/>
-        <input type="text" name="userUrl" id="url" placeholder="Enter your homepage url"><br/>
+        <label for="homeurl">Ваш homepage url:</label><br/>
+        <input type="text" 
+            name="homeurl" 
+            ng-pattern="/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/" 
+            id="homeurl"
+            ng-model="comment.homeurl" 
+            ng-class="{'input-wrong': !commentForm.homeurl.$valid}"
+            placeholder="Enter your homepage url"><br/>
+            <div class="input-invalid" ng-show="!commentForm.homeurl.$pristine && commentForm.homeurl.$invalid">
+                Поле должно соответствовать типу "url"!
+            </div>
+
         <div class="comment-textarea">
-                <label for="comment">Enter your comment:</label><br/>  
-                <textarea name = "userComment" id="comment" placeholder="Enter your comment"></textarea>
+                <label for="comment">Введите Ваш комментарий:</label><br/>  
+                <textarea 
+                    name="comment" 
+                    id="comment" 
+                    ng-required
+                    ng-model="comment.comment" 
+                    ng-class="{'input-wrong':textareaInvalid}"
+                    placeholder="Enter your comment"></textarea>
                 <div class="buttons">
-                    <p>You can use tags:</p>
-                    <button>&lt;i&gt;</button><br/>
-                    <button>&lt;strong&gt;</button><br/>
-                    <button>&lt;a&gt;</button><br/>
-                    <button>&lt;code&gt;</button><br/>
+                    <p>Вы можете использовать теги:</p>
+                    <button ng-click="addI()">&lt;i&gt;</button><br/>
+                    <button ng-click="addStrong()">&lt;strong&gt;</button><br/>
+                    <button ng-click="addCode()">&lt;code&gt;</button><br/>
+                    <button ng-click="addA()">&lt;a href="" title=""&gt;</button><br/>
                 </div>    
+        </div>
+        <div class="textarea-invalid" ng-show="textareaInvalid">
+            Текст Вашего сообщения не валиден! возможные причины:
+                <ul>
+                    <li>Использование тега &lt;script&gt;</li>
+                    <li>Некоректная вложенность тегов</li>
+                    <li>Присутствуют не закрытые теги</li>
+                </ul>
+            Напоминаем, что использовать можно лишь теги: &lt;i&gt;, &lt;strong&gt;, &lt;code&gt;, &lt;a href="" title=""&gt;
         </div>   
-        <div class="captha">
-            <no-captcha
-                g-recaptcha-response="gRecaptchaResponse"
-                theme='light'
-                control="noCaptchaControl"
-                site-key="<your site key>">
-            </no-captcha>
-  <!--           <img src="dd" alt="dd">
-            <input type="text" name="captha">
-            <div class="clear-both"></div> -->
-        </div> 
-        <button class="send">Send comment!</button>    
+        <label for="picture">Загрузить картинку:</label>
+        <input type="file" 
+            name="picture"
+            id="picture" 
+            ng-model="comment.picture"
+            inchange-dir="isFileValide">
+        <div class="input-invalid" ng-show="!fileValid">
+                Файл должен быть размером меньше чем 3 мегабайта. Допустимые форматы - JPG, GIF, PNG!
+        </div>
+        <button 
+            class="send" 
+            ng-disabled="commentForm.$invalid && fileValid"
+            ng-click="sendComment(comment)">Оставить комментарий!</button>    
     
     </form>
 </div>
