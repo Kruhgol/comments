@@ -1,5 +1,5 @@
 <div class="comments">
-    <div class="comment" ng-repeat="comment in comments">
+    <div class="comment" ng-repeat="comment in comments |orderBy:sortField:rever">
         <div class="comment-parent">
             <div class="user-data">
                 <div class="user-image">
@@ -9,15 +9,15 @@
                     <span>{{comment.userName}}</span>
                 </div>
                 <div class="user-comment-date">
-                    <p><span>{{comment.userDate | mydateFilter}}</span> в <span>17:44</span></p>
+                    <p><span>{{comment.userDate | mydateFilter}}</span></p>
                 </div>
                 <div class="user-rating">
                     <span>{{comment.userRating}}</span>
                 </div>
-                <div class="user-rating-plus" ng-click="like(comment)">
+                <div class="user-rating-plus" ng-click="getLike(comment)">
                     
                 </div>
-                <div class="user-rating-minus" ng-click="dislike(comment)">
+                <div class="user-rating-minus" ng-click="getDislike(comment)">
 
                 </div>
             </div>
@@ -26,13 +26,13 @@
                     <p>{{comment.commentText}}</p>
                 </div>
                 <div class="comment-image">
-                    <img ng-src="{{comment.comment_picture}}" alt="">
+                    <img ng-src="{{comment.comment_picture}}" alt="{{comment.comment_picture}}">
                 </div>
             </div>
             <div class="comment-comment">
                 <span ng-click="addForm = !addForm">Ответить</span>
                 <div class="add-form" ng-show="addForm">
-                    <addcomment-dir commentId="{{comment.comment_id}}"></addcomment-dir>
+                    <addcomment-dir comment="comment"></addcomment-dir>
                 </div>
             </div>
         </div>

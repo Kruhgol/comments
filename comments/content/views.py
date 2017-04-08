@@ -11,6 +11,67 @@ def index(request):
 
 # def like(request, id):
 
+def like(request, commentId):
+    print commentId
+    c = Comment.objects.get(id = commentId)
+    rating = c.comment_rating
+    c.comment_rating = c.comment_rating + 1
+    c.save()
+    comments = Comment.objects.filter(comment_isparent = False)
+    r =[]
+    for i in comments:
+        o={}
+        o['userName'] = i.comment_name
+        o['userDate'] = json.dumps(i.comment_date.strftime("%Y-%m-%d %H:%M"))
+        o['userRating'] = i.comment_rating
+        o['commentText'] = i.comment_text
+        o['parent_id'] = i.comment_parentid
+        o['comment_id'] = i.id
+        if i.comment_picture:
+            o['comment_picture'] = i.comment_picture.url
+        if Comment.objects.filter(comment_parentid = i.id):
+            c = Comment.objects.filter(comment_parentid = i.id)
+            o['childComments'] = getChildComment(c)
+        r.append(o)
+    res = json.dumps(r)
+    return HttpResponse(res)
+
+def disLike(request, commentId):
+    print commentId
+    c = Comment.objects.get(id = commentId)
+    rating = c.comment_rating
+    if rating > 0:
+        c.comment_rating = c.comment_rating - 1
+    c.save()        
+    comments = Comment.objects.filter(comment_isparent = False)
+    r =[]
+    for i in comments:
+        o={}
+        o['userName'] = i.comment_name
+        o['userDate'] = json.dumps(i.comment_date.strftime("%Y-%m-%d %H:%M"))
+        o['userRating'] = i.comment_rating
+        o['commentText'] = i.comment_text
+        o['parent_id'] = i.comment_parentid
+        o['comment_id'] = i.id
+        if i.comment_picture:
+            o['comment_picture'] = i.comment_picture.url
+        if Comment.objects.filter(comment_parentid = i.id):
+            c = Comment.objects.filter(comment_parentid = i.id)
+            o['childComments'] = getChildComment(c)
+        r.append(o)
+    res = json.dumps(r)
+    return HttpResponse(res)
+
+
+
+
+
+
+
+
+
+
+
 
 
 def postComment(request):
@@ -36,10 +97,29 @@ def postComment(request):
         c.save()
     if 'picture' in request.FILES:
         print '___picture___'
-        c.comment_picture = request.FILES['file']
+        c.comment_picture = request.FILES['picture']
         c.save()
 
-    return HttpResponse('ok');
+
+    comments = Comment.objects.filter(comment_isparent = False)
+    r =[]
+    for i in comments:
+        o={}
+        o['userName'] = i.comment_name
+        o['userDate'] = json.dumps(i.comment_date.strftime("%Y-%m-%d %H:%M"))
+        o['userRating'] = i.comment_rating
+        o['commentText'] = i.comment_text
+        o['parent_id'] = i.comment_parentid
+        o['comment_id'] = i.id
+        if i.comment_picture:
+            o['comment_picture'] = i.comment_picture.url
+        if Comment.objects.filter(comment_parentid = i.id):
+            c = Comment.objects.filter(comment_parentid = i.id)
+            o['childComments'] = getChildComment(c)
+        r.append(o)
+    res = json.dumps(r)
+    return HttpResponse(res)
+
 
 
 
@@ -97,6 +177,8 @@ def getChildComment(c):
         obj['commentText'] = i.comment_text
         obj['parent_id'] = i.comment_parentid
         obj['comment_id'] = i.id
+        if i.comment_picture:
+            obj['comment_picture'] = i.comment_picture.url
         if Comment.objects.filter(comment_parentid = i.id):
             c = Comment.objects.filter(comment_parentid = i.id)
             obj['childComments'] = getChildComment(c)

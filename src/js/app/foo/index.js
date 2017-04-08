@@ -10,8 +10,12 @@ module.exports = angular.module('myApp.foo',[])
     .directive('addcommentDir',['$templateCache','requestsService', require('./directives/addcomment.directive')])
     .directive('commentsDir',['$templateCache', require('./directives/comments.directive')])
     .directive('inchangeDir', require('./directives/inchange.directive'))
+    .directive('pageDir', require('./directives/page.directive'))
     .factory('requestsService', require('./service/requests.service'))
     .factory('textvalService', require('./service/textval.service'))
+    .value('appData', {
+        comments: []
+    })
     .filter('mydateFilter', function(){
         return function(param){
             var months = {

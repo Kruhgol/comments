@@ -7,11 +7,14 @@ module.exports = function($templateCache){
                 if (newVal){
                     scope.comment.comment_id = newVal;
                 }
-            })
-            
+            })          
         },
 
         restrict: 'EA',
+
+        scope: {
+            comment: "=comment"
+        },
 
         template: $templateCache.get('addcomment.html')
 

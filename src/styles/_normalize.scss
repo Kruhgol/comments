@@ -14,11 +14,13 @@ table, caption, tbody, tfoot, thead, tr, th, td {
     color:#000000;
     vertical-align: top;
     font-family: $Tahoma;
+    box-sizing: border-box;
 
 }
 
 html {
     height: 100%;
+    width: 100%;
     background-color: #ffffff;
 }
 

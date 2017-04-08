@@ -1,10 +1,21 @@
 <addcomment-dir></addcomment-dir>
+<br/>
+<div class="sort">
+    <div class="sort-line">
+        <span>Сортировка комментариев:</span>
+        <button ng-click="orderByName('userName')">По имени пользователя</button>
+        <button ng-click="orderByRating('userRating')">По рейтингу</button>
+        <button ng-click="orderByDate('userDate')">По дате добавления</button>
+    </div>
+</div>
 
-<comments-dir comments="{{comments}}"></comments-dir>
+<comments-dir comments="{{comments[page]}}"></comments-dir>
 
-<div class="pages">
-    <a href="#/page/1">1</a>
-    <a href="#/page/2">2</a>
-    <a href="#/page/3">3</a>
-    <a href="#/page/4">4</a>
+
+<div class="pages" id="pages">
+    <a href="#/page/{{page - 1}}" ng-show="!leftBlock">&lt;</a>
+    <a ng-show="leftBlock" id="arrow-left-block">&lt;</a>
+    <a href="#/page/{{$index+1}}" page-dir index="{{$index}}" ng-repeat="i in comments">{{$index+1}}</a>
+    <a ng-show="rightBlock" id="arrow-right-block">&gt;</a>
+    <a href="#/page/{{page + 1}}" ng-show="!rightBlock">&gt;</a>
 </div>

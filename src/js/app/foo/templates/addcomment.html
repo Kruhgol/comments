@@ -1,7 +1,7 @@
 <div class="add-comment">
     <p>Оставить комментарий</p>
 
-    <form name="commentForm" novalidate ng-controller="addCommentCtrl" enctype="multipart/form-data">
+    <form name="commentForm" id="{{'commentFormId'+comment.comment_id}}" novalidate ng-controller="addCommentCtrl" enctype="multipart/form-data" ng-model="ddd">
         <label for="name">Ваше имя:</label><br/>
         <input 
             type="text" 
@@ -9,7 +9,7 @@
             name="name" 
             ng-pattern="/^[a-zA-Z0-9]*$/"
             required
-            ng-model="comment.name"
+            ng-model="userComment.name"
             ng-minlength="5" 
             ng-maxlength="15" 
             ng-class="{'input-wrong': !commentForm.name.$pristine && (commentForm.name.$error.minlength || commentForm.name.$error.maxlength || commentForm.name.$invalid) }"
@@ -30,7 +30,7 @@
             id="email" 
             ng-pattern="/^([a-z0-9_\.-]+)@([a-z0-9_\.-]+)\.([a-z\.]{2,6})$/"
             required
-            ng-model="comment.email"
+            ng-model="userComment.email"
             ng-maxlength="50"
             ng-class="{'input-wrong': !commentForm.email.$pristine && (commentForm.email.$error.minlength || commentForm.email.$error.maxlength || commentForm.email.$invalid) }"
             placeholder="Enter your email"><br/>
@@ -46,7 +46,7 @@
             name="homeurl" 
             ng-pattern="/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/" 
             id="homeurl"
-            ng-model="comment.homeurl" 
+            ng-model="userComment.homeurl" 
             ng-class="{'input-wrong': !commentForm.homeurl.$valid}"
             placeholder="Enter your homepage url"><br/>
             <div class="input-invalid" ng-show="!commentForm.homeurl.$pristine && commentForm.homeurl.$invalid">
@@ -58,9 +58,11 @@
                 <textarea 
                     name="comment" 
                     id="comment" 
-                    ng-required
-                    ng-model="comment.comment" 
-                    ng-class="{'input-wrong':textareaInvalid}"
+                    required
+                    ng-minlength="1"
+                    ng-model="userComment.comment" 
+                    ng-class="{'input-wrong':textareaInvalid || !commentForm.comment.$pristine && commentForm.comment.$error.minlength}"
+                    ng-click="textareaInvalid = false"
                     placeholder="Enter your comment"></textarea>
                 <div class="buttons">
                     <p>Вы можете использовать теги:</p>
@@ -76,6 +78,7 @@
                     <li>Использование тега &lt;script&gt;</li>
                     <li>Некоректная вложенность тегов</li>
                     <li>Присутствуют не закрытые теги</li>
+                    <li>Комментарий не может быть пустым</li>
                 </ul>
             Напоминаем, что использовать можно лишь теги: &lt;i&gt;, &lt;strong&gt;, &lt;code&gt;, &lt;a href="" title=""&gt;
         </div>   
@@ -83,15 +86,15 @@
         <input type="file" 
             name="picture"
             id="picture" 
-            ng-model="comment.picture"
+            ng-model="userComment.picture"
             inchange-dir="isFileValide">
         <div class="input-invalid" ng-show="!fileValid">
                 Файл должен быть размером меньше чем 3 мегабайта. Допустимые форматы - JPG, GIF, PNG!
         </div>
         <button 
             class="send" 
-            ng-disabled="commentForm.$invalid && fileValid"
-            ng-click="sendComment(comment)">Оставить комментарий!</button>    
+            ng-disabled="commentForm.$invalid"
+            ng-click="sendComment(userComment)">Оставить комментарий!</button>    
     
     </form>
 </div>

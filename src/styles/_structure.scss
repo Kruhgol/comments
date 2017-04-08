@@ -1,5 +1,6 @@
 body {
     height: 100%;
+    width:100%;
     background-color: $bodyColor;
 
     .wrapper {
@@ -9,7 +10,7 @@ body {
         .content {
             padding-bottom: $marginFooterHeight;  
             margin: auto;
-            width: $contentWidth;
+            width: 100%;
         }   
 
         .footer {
@@ -19,7 +20,8 @@ body {
             width: 100%;
             height: $footerHeight;
             .footer-content {
-                width: $contentWidth;
+                /*width: $contentWidth;*/
+                width: 100%;
                 margin: auto;
             }
         }

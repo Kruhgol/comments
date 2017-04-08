@@ -23,6 +23,8 @@ urlpatterns = [
     url(r'^getcomments/', views.getComments),
     url(r'^getcaptcha/', views.getCaptcha),
     url(r'^postcomment/', views.postComment),
+    url(r'^like/(?P<commentId>[^/]+)', views.like),
+    url(r'^dislike/(?P<commentId>[^/]+)', views.disLike),
 
 ]
 

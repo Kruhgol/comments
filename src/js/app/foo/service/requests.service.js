@@ -6,7 +6,8 @@ function Request($http, $rootScope){
     var getComments = '/getcomments',
         getCaptcha = '/getcaptcha',
         postComment = '/postcomment',
-        like = '/like/';
+        like = '/like/',
+        disLike = '/dislike/'
 
     //controller's GET requests
 
@@ -22,6 +23,11 @@ function Request($http, $rootScope){
 
     this.getLike = function(id) {
         var adr = like + id + '/';
+        return $http.get(adr);
+    };
+
+    this.getDislike = function(id) {
+        var adr = disLike + id + '/';
         return $http.get(adr);
     };
 

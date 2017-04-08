@@ -12,17 +12,23 @@ module.exports = function($templateCache){
 
         restrict: 'EA',
 
-        controller: function($scope, requestsService){
+        controller: function($scope, requestsService, appData, $rootScope){
             $scope.addForm = false;
 
-            $scope.like = function(comment){
-                requestsService.like(comment.comment_id).then(function(resulr){
-                    comment.userRating = result.data;
+            $scope.getLike = function(comment){
+                console.log('like');
+                requestsService.getLike(comment.comment_id).then(function(result){
+                    appData.comments = result.data;
+                    $rootScope.$broadcast('changeCommentsData');
                 })
             }
 
-            $scope.dislike = function(comment){
-                
+            $scope.getDislike = function(comment){
+                console.log('dislike');
+                requestsService.getDislike(comment.comment_id).then(function(result){
+                    appData.comments = result.data;
+                    $rootScope.$broadcast('changeCommentsData');
+                })                
             }
 
         },

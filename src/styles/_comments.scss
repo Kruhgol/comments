@@ -1,6 +1,9 @@
 .comments {
     width: 100%;
+    max-width: $contentWidth;
+    min-width: $minWidth;
     margin-top: 20px;
+    margin: auto;
     .comment {
         margin: 5px 0 5px 0;
         .comments-child {
@@ -96,7 +99,10 @@
         .comment-image {
             text-align: center;
             padding: 10px;
-            max-width: 80%;
+            img{
+                width: auto;
+                max-width:100%;
+            }
         }
     }
 
@@ -115,3 +121,15 @@
     }
 }
 
+
+/*        
+        @include respond-to(medium){
+
+        }
+        @include respond-to(tablet){
+
+        }
+        @include respond-to(mobile){
+          
+        } 
+*/
