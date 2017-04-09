@@ -5,11 +5,9 @@ module.exports = function($scope, requestsService, appData, $rootScope, $filter)
     $scope.sortField = 'userDate';
     $scope.reverse = false;
     $scope.commentsOnPage = 10;
-    $scope.leftBlock = true;
 
 
     requestsService.getComments().then(function(result){
-        //$scope.commentsWithServer = result.data;
         appData.comments = result.data;
         $rootScope.$broadcast('changeCommentsData');
     });

@@ -110,12 +110,15 @@ body {
         padding-top: 0px;
         position: relative;
         padding-left: 250px;
-        width: 130px; }
+        width: 150px; }
         .add-comment form .comment-textarea .buttons p {
           font-size: 14px;
-          margin-bottom: 0; }
+          margin-bottom: 0;
+          width: 100px; }
         .add-comment form .comment-textarea .buttons button {
-          margin-top: 10px; }
+          margin-top: 10px;
+          width: 120px;
+          font-size: 12px; }
           .add-comment form .comment-textarea .buttons button:hover {
             cursor: pointer; }
     .add-comment form .captha {
@@ -236,6 +239,9 @@ body {
       .comment-parent .user-text .comment-text p {
         padding: 10px;
         font-size: 20px; }
+        .comment-parent .user-text .comment-text p a {
+          color: #3066D5;
+          font-size: 20px; }
     .comment-parent .user-text .comment-image {
       text-align: center;
       padding: 10px; }

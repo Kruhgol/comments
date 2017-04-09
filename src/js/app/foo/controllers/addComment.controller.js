@@ -1,26 +1,6 @@
 
 module.exports = function($scope, $rootScope, textvalService, requestsService, appData){
-            var textarea = document.getElementById("comment");
-            $scope.addI = function(){
-                var commentText = textarea.value;
-                commentText += '<i></i>'
-                textarea.value = commentText;
-            }
-            $scope.addStrong = function(){
-                var commentText = textarea.value;
-                commentText += '<strong></strong>'
-                textarea.value = commentText;
-            }
-            $scope.addCode = function(){
-                var commentText = textarea.value;
-                commentText += '<code></code>'
-                textarea.value = commentText;
-            }
-            $scope.addA = function(){
-                var commentText = textarea.value;
-                commentText += '<a href="" title=""></a>'
-                textarea.value = commentText;
-            }
+            
             $scope.fileValid = true;
 
             $scope.sendComment = function(userComment){

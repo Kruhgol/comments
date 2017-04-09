@@ -4,19 +4,21 @@ module.exports = function($scope, requestsService, $filter, $routeParams, appDat
 
     $scope.comment={comment_id:false};
     $scope.page = $routeParams.pageId-1;
-    
+    if($routeParams.pageId == 1){
+        $scope.leftBlock = true;         
+    }
+   
 
     $scope.$watch('page', function(newVal){
         $scope.page = newVal;
-        if(newVal){
-            alert($scope.page+1 + '  ' + $scope.comments.length);
+        if(newVal && $scope.comments){
             if ($scope.page == 0){
-                $scope.leftBlock == true;
+                $scope.leftBlock = true;
+                $scope.rightBlock =false
             } else
             if ($scope.page+1 == $scope.comments.length){
-                alert(true);
-                $scope.rightBlock == true;
-                $apply();
+                $scope.rightBlock = true;
+                $scope.leftBlock = false;
             } else {
                 $scope.leftBlock = false;
                 $scope.rightBlock = false;

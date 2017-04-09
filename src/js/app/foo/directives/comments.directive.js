@@ -12,7 +12,7 @@ module.exports = function($templateCache){
 
         restrict: 'EA',
 
-        controller: function($scope, requestsService, appData, $rootScope){
+        controller: function($scope, requestsService, appData, $rootScope, $sce){
             $scope.addForm = false;
 
             $scope.getLike = function(comment){

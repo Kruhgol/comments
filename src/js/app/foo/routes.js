@@ -14,9 +14,3 @@ module.exports = function($routeProvider){
 		redirectTo: "/"
 	});
 }
-
-
-    // .when('/',{
-    //  templateUrl: "home.html",
-    //  controller: "homeCtrl"
-    // })

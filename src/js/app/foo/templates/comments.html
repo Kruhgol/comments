@@ -23,7 +23,7 @@
             </div>
             <div class="user-text">
                 <div class="comment-text">
-                    <p>{{comment.commentText}}</p>
+                    <p ng-bind-html="(comment.commentText | myTrustAsHtmlFilter)"></p>
                 </div>
                 <div class="comment-image">
                     <img ng-src="{{comment.comment_picture}}" alt="{{comment.comment_picture}}">

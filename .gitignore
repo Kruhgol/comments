@@ -1,6 +1,4 @@
 node_modules
 build
 bower_components
-alohafriends/static
-alohafriends/templates
-alohafriends/**/*.pyc
+comments/**/*.pyc
