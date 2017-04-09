@@ -30,9 +30,13 @@ http://nmkdeveloper.kh.ua/
 Для того чтобы использовать приложение необходимо:
 
 $ git clone https://github.com/Kruhgol/comments.git
+
 $ cd comments
+
 $ npm install 
+
 $ bower install
+
 $ gulp
 
 Для запуска локального сервера, необходимо запустить djago
