@@ -1,24 +1,17 @@
-
 //factory service with requests
-
-module.exports = function($http, $rootScope){
+module.exports = function($http, $rootScope) {
     return new Request($http, $rootScope);
 }
 
-function Request($http, $rootScope){
+function Request($http, $rootScope) {
     var getComments = '/getcomments',
         getCaptcha = '/getcaptcha',
         postComment = '/postcomment',
         like = '/like/',
         disLike = '/dislike/'
 
-    this.getComments = function(){
+    this.getComments = function() {
         var adr = getComments + '/';
-        return $http.get(adr);
-    };
-
-    this.getCaptcha = function(){
-        var adr = getCaptcha + '/';
         return $http.get(adr);
     };
 
@@ -38,12 +31,11 @@ function Request($http, $rootScope){
             url: adr,
             method: 'POST',
             data: fd,
-            headers: { 'Content-Type': undefined},
+            headers: {
+                'Content-Type': undefined
+            },
             transformRequest: angular.identity
 
         });
     };
-
-
-
 }

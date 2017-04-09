@@ -10,6 +10,6 @@ module.exports = gulp.task('styles', function(){
 	console.log('dest', config.build.styles);
 	return gulp.src(config.src.styles)
 		.pipe(sass().on('error', sass.logError))
-		.pipe(concat('style.css'))
+		.pipe(concat('comments_style.css'))
 		.pipe(gulp.dest(config.build.styles))
 });

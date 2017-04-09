@@ -13,6 +13,6 @@ module.exports = gulp.task('browserify', function(){
 	return browserify({entries: [config.src.modules]})
 		.transform(browserifyShim)
 		.bundle()
-		.pipe(source('build.js'))
+		.pipe(source('comments_build.js'))
 		.pipe(gulp.dest(config.build.modules))
 })

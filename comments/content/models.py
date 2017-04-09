@@ -21,6 +21,5 @@ class Comment(models.Model):
     comment_isparent = models.BooleanField()
     comment_parentid = models.IntegerField(null=True,blank=True)
     comment_picture = models.ImageField(null=True, blank=True, upload_to='images', verbose_name='photo')
-    #comment_parent = models.ForeignKey(Comment, null=True)
     def __unicode__(self):
         return self.comment_name

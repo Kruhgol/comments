@@ -340,48 +340,51 @@ PATTERNS:[{gSize:3,lgSize:3,maxFrac:3,minFrac:0,minInt:1,negPre:"-",negSuf:"",po
 'use strict'
 // controller for addComment.directive
 
-module.exports = function($scope, $rootScope, textvalService, requestsService, appData){
-            
-            //the validity of the file in the field input[type=file]. Default value
-            $scope.fileValid = true;
+module.exports = function($scope, $rootScope, textvalService, requestsService, appData) {
 
-            //send form to server if comment text is valid
-            //@param userComment - Form 'addComment' content
-            $scope.sendComment = function(userComment){
-                var validCommentText = textvalService.isvaltext(userComment.comment);
+    //the validity of the file in the field input[type=file]. Default value
+    $scope.fileValid = true;
 
-                if(validCommentText){
+    //send form to server if comment text is valid
+    //@param userComment{Object}
+    $scope.sendComment = function(userComment) {
+        var validCommentText = textvalService.isvaltext(userComment.comment);
 
-                    userComment.comment = validCommentText; 
+        if (validCommentText) {
 
-                    var fd = new FormData();
-                    fd.append('name', userComment.name);
-                    fd.append('email', userComment.email);
-                    fd.append('comment', userComment.comment);
+            userComment.comment = validCommentText;
 
-                    if($scope.formId != 'commentFormId'){
-                        fd.append('comment_id', $scope.comment.comment_id);
-                    }
+            var fd = new FormData();
+            fd.append('name', userComment.name);
+            fd.append('email', userComment.email);
+            fd.append('comment', userComment.comment);
 
-                    if(document.getElementById($scope.formId).picture.files[0]){
-                        fd.append('picture', document.getElementById($scope.formId).picture.files[0]);                       
-                    }
-
-                    requestsService.postComment(fd).then(function(result){
-                        appData.comments = result.data;
-                        $rootScope.$broadcast('changeCommentsData');
-                    })
-                } else {
-                    $scope.textareaInvalid = true;
-                }
+            if ($scope.formId != 'commentFormId') {
+                fd.append('comment_id', $scope.comment.comment_id);
             }
-}
 
+            if (document.getElementById($scope.formId).picture.files[0]) {
+                fd.append('picture', document.getElementById($scope.formId).picture.files[0]);
+            }
+
+            //POST form, and get result - (Array of comments with new comment)
+            // result with comments (Array) save in appData.value service for storing 
+            // event 'changeCommentsData' informs in App that appData is has changed
+            requestsService.postComment(fd).then(function(result) {
+                appData.comments = result.data;
+                $rootScope.$broadcast('changeCommentsData');
+
+            })
+        } else {
+            $scope.textareaInvalid = true;
+        }
+    }
+}
 
 },{}],4:[function(require,module,exports){
 'use strict';
 
-module.exports = function($scope, requestsService, appData, $rootScope, $filter){
+module.exports = function($scope, requestsService, appData, $rootScope, $filter) {
     //default values
     $scope.sortField = 'userDate';
     $scope.reverse = false;
@@ -390,109 +393,102 @@ module.exports = function($scope, requestsService, appData, $rootScope, $filter)
     // get comments from server
     // result with comments (Array) save in appData.value service for storing 
     // event 'changeCommentsData' informs in App that appData is has changed
-    requestsService.getComments().then(function(result){
+    requestsService.getComments().then(function(result) {
         appData.comments = result.data;
         $rootScope.$broadcast('changeCommentsData');
     });
 
     //function devides beforeArr to groups, saves they to outputArr and returns it
-    $scope.devidedIntoGroups = function(inputArr){
+    $scope.devidedIntoGroups = function(inputArr) {
         var outputArr = [];
-        for(var i=0, j=0; i<inputArr.length;){
-            if(i+$scope.commentsOnPage <= inputArr.length){
-                outputArr[j] = inputArr.slice(i, i+10);
-                i+=$scope.commentsOnPage;
+        for (var i = 0, j = 0; i < inputArr.length; j++) {
+            if (i + $scope.commentsOnPage <= inputArr.length) {
+                outputArr[j] = inputArr.slice(i, i + $scope.commentsOnPage);
+                i += $scope.commentsOnPage;
             } else {
                 outputArr[j] = inputArr.slice(i);
                 break;
             }
-            j++;
-        } 
-        return  outputArr;      
+        }
+        return outputArr;
     }
 
     //event 'changeCommentsData' - appData.comments has changed
     //function gets comments from appData, sort this Array and saves comments in $scope.comments
-    $scope.$on('changeCommentsData', function(){
+    $scope.$on('changeCommentsData', function() {
         $scope.commentsData = appData.comments;
         $scope.order($scope.sortField, $scope.reverse);
-        $scope.comments = $scope.devidedIntoGroups($scope.commentsData); 
+        $scope.comments = $scope.devidedIntoGroups($scope.commentsData);
     })
 
     //function sorts comments
     //@param predicate - comment sort field
-    $scope.order = function(predicate, reverse){
+    $scope.order = function(predicate, reverse) {
         var orderBy = $filter('orderBy');
         $scope.commentsData = orderBy($scope.commentsData, $scope.sortField, $scope.reverse);
         $scope.comments = $scope.devidedIntoGroups($scope.commentsData);
     }
 
-    $scope.orderByName = function(sortField){
+    $scope.orderByName = function(sortField) {
         $scope.sortField = sortField;
         $scope.reverse = !$scope.reverse;
         $scope.order($scope.sortField, $scope.reverse);
     }
 
-    $scope.orderByRating = function(sortField){
+    $scope.orderByRating = function(sortField) {
         $scope.sortField = sortField;
-        $scope.reverse = !$scope.reverse; 
-        $scope.order($scope.sortField, $scope.reverse);       
+        $scope.reverse = !$scope.reverse;
+        $scope.order($scope.sortField, $scope.reverse);
     }
 
-    $scope.orderByDate = function(sortField){
+    $scope.orderByDate = function(sortField) {
         $scope.sortField = sortField;
-        $scope.reverse = !$scope.reverse;  
-        $scope.order($scope.sortField, $scope.reverse);     
+        $scope.reverse = !$scope.reverse;
+        $scope.order($scope.sortField, $scope.reverse);
     }
-
-
 }
-
-
 },{}],5:[function(require,module,exports){
 'use strict';
 
-module.exports = function($scope, requestsService, $filter, $routeParams, appData){
-
+module.exports = function($scope, requestsService, $filter, $routeParams, appData) {
+    window.scrollTo(500, 0);
     //$scope.comment={comment_id:false};
 
-    $scope.page = $routeParams.pageId-1;
+    $scope.page = $routeParams.pageId - 1;
 
 
     //arrow Left and arrow Right  is blocked and show in gray color
-    if($routeParams.pageId == 1){
-        $scope.leftBlock = true;         
+    if ($routeParams.pageId == 1) {
+        $scope.leftBlock = true;
     }
-   
-    $scope.$watch('page', function(newVal){
+
+    $scope.$watch('page', function(newVal) {
         $scope.page = newVal;
-        if(newVal && $scope.comments){
-            if ($scope.page == 0){
+        if (newVal && $scope.comments) {
+            if ($scope.page == 0) {
                 $scope.leftBlock = true;
-                $scope.rightBlock =false
+                $scope.rightBlock = false
             } else
-            if ($scope.page+1 == $scope.comments.length){
+            if ($scope.page + 1 == $scope.comments.length) {
                 $scope.rightBlock = true;
                 $scope.leftBlock = false;
             } else {
                 $scope.leftBlock = false;
                 $scope.rightBlock = false;
-            }  
-        } 
+            }
+        }
     })
 
 }
 },{}],6:[function(require,module,exports){
 'use strict';
 //redirect to comments page
-module.exports = function($scope){
-    $scope.$on('changeCommentsData', function(){
-    window.location.assign('#/page/1');
-  });
-    
+module.exports = function($scope) {
+    $scope.$on('changeCommentsData', function() {
+        window.location.assign('#/page/1');
+    });
+
 }
-
-
 },{}],7:[function(require,module,exports){
 'use strict';
 
@@ -500,9 +496,9 @@ module.exports = function($scope){
 //scope isolated
 //loval variable comment for this comment ansvering
 
-module.exports = function($templateCache){
+module.exports = function($templateCache) {
     return {
-        link: function(scope, element, attribute){
+        link: function(scope, element, attribute) {
 
             // scope.$watch('comment.comment_id', function(newVal){
             //     if (newVal){
@@ -511,25 +507,25 @@ module.exports = function($templateCache){
             // });
 
             // add tags by buttoms
-            var textarea = element.find("form")[0].comment
-            scope.addI = function(){
+            var textarea = element.find("form")[0].comment;
+            scope.addI = function() {
                 var commentText = textarea.value;
-                commentText += '<i></i>'
+                commentText += '<i></i>';
                 textarea.value = commentText;
             }
-            scope.addStrong = function(){
+            scope.addStrong = function() {
                 var commentText = textarea.value;
-                commentText += '<strong></strong>'
+                commentText += '<strong></strong>';
                 textarea.value = commentText;
             }
-            scope.addCode = function(){
+            scope.addCode = function() {
                 var commentText = textarea.value;
-                commentText += '<code></code>'
+                commentText += '<code></code>';
                 textarea.value = commentText;
             }
-            scope.addA = function(){
+            scope.addA = function() {
                 var commentText = textarea.value;
-                commentText += '<a href="" title=""></a>'
+                commentText += '<a href="" title=""></a>';
                 textarea.value = commentText;
             }
         },
@@ -551,12 +547,12 @@ module.exports = function($templateCache){
 //scope isolated
 //loval variable inputComments is Array of comments to show
 
-module.exports = function($templateCache){
+module.exports = function($templateCache) {
     return {
-        link: function(scope, element, attribute){
+        link: function(scope, element, attribute) {
 
-            scope.$watch("inputComments", function(newValue){
-                if(newValue){
+            scope.$watch("inputComments", function(newValue) {
+                if (newValue) {
                     scope.comments = JSON.parse(newValue);
                 }
             })
@@ -564,24 +560,29 @@ module.exports = function($templateCache){
 
         restrict: 'EA',
 
-        controller: function($scope, requestsService, appData, $rootScope, $sce){
-            //show form for answering this comment
+        controller: function($scope, requestsService, appData, $rootScope, $sce) {
+            //show form for answering this comment           
+
             $scope.addForm = false;
-            
-            $scope.getLike = function(comment){
+
+            //GET request for like or dislike
+            // result with comments (Array) save in appData.value service for storing 
+            // event 'changeCommentsData' informs in App that appData is has changed            
+
+            $scope.getLike = function(comment) {
                 console.log('like');
-                requestsService.getLike(comment.comment_id).then(function(result){
+                requestsService.getLike(comment.comment_id).then(function(result) {
                     appData.comments = result.data;
                     $rootScope.$broadcast('changeCommentsData');
                 })
             }
 
-            $scope.getDislike = function(comment){
+            $scope.getDislike = function(comment) {
                 console.log('dislike');
-                requestsService.getDislike(comment.comment_id).then(function(result){
+                requestsService.getDislike(comment.comment_id).then(function(result) {
                     appData.comments = result.data;
                     $rootScope.$broadcast('changeCommentsData');
-                })                
+                })
             }
 
         },
@@ -595,30 +596,28 @@ module.exports = function($templateCache){
     }
 }
 },{}],9:[function(require,module,exports){
-
 //directive for observing for change in input[type=file] and checking input value
-
-module.exports = function($rootScope){
+module.exports = function($rootScope) {
     return {
-        link: function(scope, element, attribute){
-            scope.$watch('comment', function(newVal){
-                scope.formId = element.parent()[0].id;                
+        link: function(scope, element, attribute) {
+            scope.$watch('comment', function(newVal) {
+                scope.formId = element.parent()[0].id;
             })
-            element.bind("change", function(event){           
+            element.bind("change", function(event) {
                 var f = element[0].files[0];
-                if(f.size < 3000000 && 
+                if (f.size < 3000000 &&
                     (
                         f.type == 'image/jpeg' ||
                         f.type == 'image/jpg' ||
                         f.type == 'image/png' ||
                         f.type == 'image/gif'
-                        )){
+                    )) {
                     scope.fileValid = true;
                     scope.$apply();
                 } else {
                     scope.fileValid = false;
                     scope.$apply();
-               }
+                }
             })
         },
 
@@ -628,12 +627,12 @@ module.exports = function($rootScope){
 }
 },{}],10:[function(require,module,exports){
 //directive for change background-color numberPage block
-module.exports = function($rootScope){
+module.exports = function($rootScope) {
     return {
-        link: function(scope, element, attribute){
+        link: function(scope, element, attribute) {
             var index = attribute['index'];
-            if(scope.page == index){
-                element.attr('style','background-color: #267B08; color: #ffffff;')
+            if (scope.page == index) {
+                element.attr('style', 'background-color: #267B08; color: #ffffff;')
             }
         },
 
@@ -642,64 +641,66 @@ module.exports = function($rootScope){
     }
 }
 },{}],11:[function(require,module,exports){
-
 //filter for output text with HTML tags
-
-module.exports = function($sce){
-        return function(param){
-            return $sce.trustAsHtml(param);
-        }
+module.exports = function($sce) {
+    return function(param) {
+        return $sce.trustAsHtml(param);
     }
+}
 },{}],12:[function(require,module,exports){
-
 //filter for output date in comment
-
-module.exports = function(){
-        return function(param){
-            var months = {
-                '01':'января',
-                '02':'февраля',
-                '03':'марта',
-                '04':'апреля',
-                '05':'мая',
-                '06':'июня',
-                '07':'июля',
-                '08':'августа',
-                '09':'сентября',
-                '10':'октября',
-                '11':'ноября',
-                '12':'декабря'
-            }
-            var getMonth = function(d){
-                return months[d.slice(6,8)]
-            }
-
-            var regTime = /\d{2}:\d{2}/;
-            var date = param.slice(9, 11) + ' ' + getMonth(param)+ ' ' + param.slice(1, 5);
-            var time = param.match(regTime)
-            var value = date + ' в ' + time;
-            return value;
+module.exports = function() {
+    return function(param) {
+        var months = {
+            '01': 'января',
+            '02': 'февраля',
+            '03': 'марта',
+            '04': 'апреля',
+            '05': 'мая',
+            '06': 'июня',
+            '07': 'июля',
+            '08': 'августа',
+            '09': 'сентября',
+            '10': 'октября',
+            '11': 'ноября',
+            '12': 'декабря'
         }
+        var getMonth = function(d) {
+            return months[d.slice(6, 8)]
+        }
+
+        var regTime = /\d{2}:\d{2}/;
+        var date = param.slice(9, 11) + ' ' + getMonth(param) + ' ' + param.slice(1, 5);
+        var time = param.match(regTime)
+        var value = date + ' в ' + time;
+        return value;
     }
+}
 },{}],13:[function(require,module,exports){
 'use strict';
 
 module.exports = angular.module('myApp.foo',[])
+
     .config(require('./routes.js'))
     .config(['$httpProvider', require('./service/configHttpProvider')])
+
     .controller('appCtrl', require('./controllers/app.controller'))
     .controller('startCtrl', require('./controllers/start.controller'))
     .controller('pageCtrl', require('./controllers/page.controller'))
     .controller('addCommentCtrl', require('./controllers/addComment.controller'))
+
     .directive('addcommentDir',['$templateCache','requestsService', require('./directives/addcomment.directive')])
     .directive('commentsDir',['$templateCache', require('./directives/comments.directive')])
     .directive('inchangeDir', require('./directives/inchange.directive'))
     .directive('numberpageDir', require('./directives/numberpage.directive'))
+
     .factory('requestsService', require('./service/requests.service'))
     .factory('textvalService', require('./service/textval.service'))
+    .value('appData', require('./service/appData.value.js'))
+        
     .filter('myTrustAsHtmlFilter', require('./filters/myTrustAsHtml.filter'))
     .filter('mydateFilter', require('./filters/mydate.filter'))
-    .value('appData', require('./service/appData.value.js'))
+
 
 
 },{"./controllers/addComment.controller":3,"./controllers/app.controller":4,"./controllers/page.controller":5,"./controllers/start.controller":6,"./directives/addcomment.directive":7,"./directives/comments.directive":8,"./directives/inchange.directive":9,"./directives/numberpage.directive":10,"./filters/myTrustAsHtml.filter":11,"./filters/mydate.filter":12,"./routes.js":14,"./service/appData.value.js":15,"./service/configHttpProvider":16,"./service/requests.service":17,"./service/textval.service":18}],14:[function(require,module,exports){
@@ -707,92 +708,82 @@ module.exports = angular.module('myApp.foo',[])
 
 module.exports = function($routeProvider){
 	$routeProvider
-    .when('/',{
-        templateUrl: 'start.html',
-        controller: 'startCtrl'
-    })
-    .when('/page/:pageId', {
-        templateUrl: 'page.html',
-        controller: 'pageCtrl'
-    })
-	.otherwise({
-		redirectTo: "/"
-	});
+        .when('/',{
+            templateUrl: 'start.html',
+            controller: 'startCtrl'
+        })
+        .when('/page/:pageId', {
+            templateUrl: 'page.html',
+            controller: 'pageCtrl'
+        })
+    	.otherwise({
+    		redirectTo: '/'
+    	});
 }
 
 },{}],15:[function(require,module,exports){
-
 //value service for storing comments
-
 module.exports = {
-        comments: []
-    }
+    comments: []
+}
 },{}],16:[function(require,module,exports){
 module.exports = function($httpProvider) {
-                    $httpProvider.defaults.xsrfCookieName = 'csrftoken';
-                    $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
-                    $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
-                    $httpProvider.defaults.transformRequest = [
-                        function(data) {
-                            /**
-                             * The workhorse; converts an object to x-www-form-urlencoded serialization.
-                             * @param {Object} obj
-                             * @return {String}
-                             */
-                            var param = function(obj) {
-                                var query = '';
-                                var name, value, fullSubName, subName, subValue, innerObj, i;
-                                for (name in obj) {
-                                    value = obj[name];
-                                    if (value instanceof Array) {
-                                        for (i = 0; i < value.length; ++i) {
-                                            subValue = value[i];
-                                            fullSubName = name + '[' + i + ']';
-                                            innerObj = {};
-                                            innerObj[fullSubName] = subValue;
-                                            query += param(innerObj) + '&';
-                                        }
-                                    } else if (value instanceof Object) {
-                                        for (subName in value) {
-                                            subValue = value[subName];
-                                            fullSubName = name + '[' + subName + ']';
-                                            innerObj = {};
-                                            innerObj[fullSubName] = subValue;
-                                            query += param(innerObj) + '&';
-                                        }
-                                    } else if (value !== undefined && value !== null) {
-                                        query += encodeURIComponent(name) + '=' + encodeURIComponent(value) + '&';
-                                    }
-                                }
-                                return query.length ? query.substr(0, query.length - 1) : query;
-                            };
-                            return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
+    $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+    $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+    $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+    $httpProvider.defaults.transformRequest = [
+        function(data) {
+            /**
+             * The workhorse; converts an object to x-www-form-urlencoded serialization.
+             * @param {Object} obj
+             * @return {String}
+             */
+            var param = function(obj) {
+                var query = '';
+                var name, value, fullSubName, subName, subValue, innerObj, i;
+                for (name in obj) {
+                    value = obj[name];
+                    if (value instanceof Array) {
+                        for (i = 0; i < value.length; ++i) {
+                            subValue = value[i];
+                            fullSubName = name + '[' + i + ']';
+                            innerObj = {};
+                            innerObj[fullSubName] = subValue;
+                            query += param(innerObj) + '&';
                         }
-                    ];
+                    } else if (value instanceof Object) {
+                        for (subName in value) {
+                            subValue = value[subName];
+                            fullSubName = name + '[' + subName + ']';
+                            innerObj = {};
+                            innerObj[fullSubName] = subValue;
+                            query += param(innerObj) + '&';
+                        }
+                    } else if (value !== undefined && value !== null) {
+                        query += encodeURIComponent(name) + '=' + encodeURIComponent(value) + '&';
+                    }
                 }
-            
+                return query.length ? query.substr(0, query.length - 1) : query;
+            };
+            return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
+        }
+    ];
+}
 },{}],17:[function(require,module,exports){
-
 //factory service with requests
-
-module.exports = function($http, $rootScope){
+module.exports = function($http, $rootScope) {
     return new Request($http, $rootScope);
 }
 
-function Request($http, $rootScope){
+function Request($http, $rootScope) {
     var getComments = '/getcomments',
         getCaptcha = '/getcaptcha',
         postComment = '/postcomment',
         like = '/like/',
         disLike = '/dislike/'
 
-    this.getComments = function(){
+    this.getComments = function() {
         var adr = getComments + '/';
-        return $http.get(adr);
-    };
-
-    this.getCaptcha = function(){
-        var adr = getCaptcha + '/';
         return $http.get(adr);
     };
 
@@ -812,24 +803,21 @@ function Request($http, $rootScope){
             url: adr,
             method: 'POST',
             data: fd,
-            headers: { 'Content-Type': undefined},
+            headers: {
+                'Content-Type': undefined
+            },
             transformRequest: angular.identity
 
         });
     };
-
-
-
 }
 },{}],18:[function(require,module,exports){
-
 //factory service for validiting comentText
-
-module.exports = function(){
+module.exports = function() {
     return new Textval();
 }
 
-function Textval(){
+function Textval() {
     //function for transforming str with tegs to str with allowed tags
     //tag script is forbidden
     //change <, > =>  &lt; , &gt;
@@ -837,14 +825,14 @@ function Textval(){
     //if str is valid - return {String}
     //if str is invalid - return false
 
-    var changeStr = function(str){
+    var changeStr = function(str) {
 
-        regScript = /^.*<script>.*$/g ;
+        regScript = /^.*<script>.*$/g;
         var isScript = regScript.test(str);
-        if (isScript){
+        if (isScript) {
             return false;
         } else {
-            str = str.replace(/</g, "&lt;");  
+            str = str.replace(/</g, "&lt;");
             str = str.replace(/>/g, "&gt;");
             str = str.replace(/&lt;code&gt;/g, "<code>");
             str = str.replace(/&lt;\/code&gt;/g, "</code>");
@@ -853,7 +841,7 @@ function Textval(){
             str = str.replace(/&lt;i&gt;/g, "<i>");
             str = str.replace(/&lt;\/i&gt;/g, "</i>");
             str = str.replace(/&lt;a/g, "<a");
-            str = str.replace(/<a.*"&gt;/g, function(p1){
+            str = str.replace(/<a.*"&gt;/g, function(p1) {
                 p1 = p1.replace(/&gt;/g, '>')
                 return p1;
             });
@@ -865,10 +853,10 @@ function Textval(){
     //function for checking of validity
     //@param {String} 
     //return {Boolean}
- 
+
     var isTextValide = function(str) {
         //Checking for alowed tags
-        var regResolvedTeg=/<code>(?=.*<\/code>)|<i>(?=.*<\/i>)|<strong>(?=.*<\/strong>)|<a\s*href=\"[a-zA-Z\/0-9]*\"\stitle=\"[^'"]*\">(?=.*<\/a>)/g ;
+        var regResolvedTeg = /<code>(?=.*<\/code>)|<i>(?=.*<\/i>)|<strong>(?=.*<\/strong>)|<a\s*href=\"[a-zA-Z\/0-9\.]*\"\stitle=\"[^'"]*\">(?=.*<\/a>)/g;
         // Checking for validity of child tags
         regValidChildTeg = /^<([asci]).*>.*<([asci]).*>(?=.*<\/\2.*>).*<\/\1.*>$/;
         // Checking for child not closed tag
@@ -876,12 +864,12 @@ function Textval(){
         // Checking for tags in str
         regIsTegInString = /^.*<\/?[asci].*>.*$/g;
 
-        if (str.match(regIsTegInString) == null){
-          return true;
+        if (str.match(regIsTegInString) == null) {
+            return true;
         }
 
         tegsArr = str.match(regResolvedTeg);
-        if (tegsArr == null){
+        if (tegsArr == null) {
             return false;
         }
 
@@ -889,25 +877,25 @@ function Textval(){
         var arr = [];
         //RegExp Array for checking tags validity
         var arrValidate = [];
-        for (var i=0;i<tegsArr.length;i++){
-            if(tegsArr[i][1]==='a'){
-                arr.push(new RegExp(tegsArr[i]+'.*</a>', "g"));
-                arrValidate.push(new RegExp('^'+tegsArr[i]+'.*<([a-z0-9]*)>(?!.*[(</\\1>)]).*'+'.*</a>$'));
+        for (var i = 0; i < tegsArr.length; i++) {
+            if (tegsArr[i][1] === 'a') {
+                arr.push(new RegExp(tegsArr[i] + '.*</a>', "g"));
+                arrValidate.push(new RegExp('^' + tegsArr[i] + '.*<([a-z0-9]*)>(?!.*[(</\\1>)]).*' + '.*</a>$'));
             } else {
-                arr.push(new RegExp(tegsArr[i]+('.*</'+tegsArr[i].substring(1)),"g"))
-                arrValidate.push(new RegExp('^'+tegsArr[i]+'.*<([a-z0-9]*)>(?!.*</\\1>).*</'+tegsArr[i].substring(1)+'$'));
+                arr.push(new RegExp(tegsArr[i] + ('.*</' + tegsArr[i].substring(1)), "g"))
+                arrValidate.push(new RegExp('^' + tegsArr[i] + '.*<([a-z0-9]*)>(?!.*</\\1>).*</' + tegsArr[i].substring(1) + '$'));
             }
-        }    
+        }
         // Array with alowed tags content
         var strArr = [];
-        for (var i=0; i<arr.length; i++){
+        for (var i = 0; i < arr.length; i++) {
             strArr[i] = str.match(arr[i]);
         }
 
         //Check for child tags
         var strValidateArr = [];
-        for (var i=0; i<strArr.length; i++){
-            if(regValidChildTeg.test(strArr[i])){
+        for (var i = 0; i < strArr.length; i++) {
+            if (regValidChildTeg.test(strArr[i])) {
                 // if is child tag
                 continue;
             } else {
@@ -916,12 +904,12 @@ function Textval(){
             }
         }
         //if isn't tags return true
-        if(!strValidateArr[0]){
+        if (!strValidateArr[0]) {
             return true;
         }
         // Check for validity
-        for (var i=0; i<strValidateArr.length; i++){
-            if(regChildNotCloseTeg.test(strValidateArr[i])){
+        for (var i = 0; i < strValidateArr.length; i++) {
+            if (regChildNotCloseTeg.test(strValidateArr[i])) {
                 return false;
             }
         }
@@ -929,10 +917,10 @@ function Textval(){
 
     }
 
-    this.isvaltext = function(str){
+    this.isvaltext = function(str) {
         str = changeStr(str);
-        if(str){
-            if(isTextValide(str)){
+        if (str) {
+            if (isTextValide(str)) {
                 return str;
             } else {
                 return false;
@@ -965,6 +953,6 @@ require('./app');
 },{"./app":19,"angular":2,"angular-route":1}],21:[function(require,module,exports){
 module.exports = angular.module('templates', []).run(['$templateCache', function($templateCache) {$templateCache.put('addcomment.html','<div class="add-comment">\r\n    <p>\u041E\u0441\u0442\u0430\u0432\u0438\u0442\u044C \u043A\u043E\u043C\u043C\u0435\u043D\u0442\u0430\u0440\u0438\u0439</p>\r\n\r\n    <form name="commentForm" id="{{\'commentFormId\'+comment.comment_id}}" novalidate ng-controller="addCommentCtrl" enctype="multipart/form-data" ng-model="ddd">\r\n        <label for="name">\u0412\u0430\u0448\u0435 \u0438\u043C\u044F:</label><br/>\r\n        <input \r\n            type="text" \r\n            id="name"\r\n            name="name" \r\n            ng-pattern="/^[a-zA-Z0-9]*$/"\r\n            required\r\n            ng-model="userComment.name"\r\n            ng-minlength="5" \r\n            ng-maxlength="15" \r\n            ng-class="{\'input-wrong\': !commentForm.name.$pristine && (commentForm.name.$error.minlength || commentForm.name.$error.maxlength || commentForm.name.$invalid) }"\r\n            placeholder="Enter your name"><br/>\r\n            <div class="input-invalid" ng-show="!commentForm.name.$pristine && commentForm.name.$invalid">\r\n                \u041F\u043E\u043B\u0435 \u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u043E \u0434\u043B\u044F \u0437\u0430\u043F\u043E\u043B\u0435\u043D\u0438\u044F \u0438 \u0434\u043E\u043B\u0436\u043D\u043E \u0441\u043E\u0434\u0435\u0440\u0436\u0430\u0442\u044C \u043B\u0438\u0448\u044C  \u0431\u0443\u043A\u0432\u044B \u043B\u0430\u0442\u0438\u043D\u0441\u043A\u043E\u0433\u043E \u0430\u043B\u0444\u0430\u0432\u0438\u0442\u0430 \u0438 \u0446\u0438\u0444\u0440\u044B!\r\n            </div>\r\n            <div class="input-invalid" ng-show="!commentForm.name.$pristine && commentForm.name.$error.minlength">\r\n                \u041C\u0438\u043D\u0438\u043C\u0430\u043B\u044C\u043D\u0430\u044F \u0434\u043B\u0438\u043D\u0430 - 5 \u0441\u0438\u043C\u0432\u043E\u043B\u043E\u0432!\r\n            </div>\r\n            <div class="input-invalid" ng-show="!commentForm.name.$pristine && commentForm.name.$error.maxlength">\r\n                \u041C\u0430\u043A\u0441\u0438\u043C\u0430\u043B\u044C\u043D\u0430\u044F \u0434\u043B\u0438\u043D\u0430 - 15 \u0441\u0438\u043C\u0432\u043E\u043B\u043E\u0432!\r\n            </div>\r\n        <label for="email">\u0412\u0430\u0448 email:</label><br/>\r\n        <input type="text" \r\n            name="email" \r\n            type="email"\r\n            id="email" \r\n            ng-pattern="/^([a-z0-9_\\.-]+)@([a-z0-9_\\.-]+)\\.([a-z\\.]{2,6})$/"\r\n            required\r\n            ng-model="userComment.email"\r\n            ng-maxlength="50"\r\n            ng-class="{\'input-wrong\': !commentForm.email.$pristine && (commentForm.email.$error.minlength || commentForm.email.$error.maxlength || commentForm.email.$invalid) }"\r\n            placeholder="Enter your email"><br/>\r\n            <div class="input-invalid" ng-show="!commentForm.email.$pristine && commentForm.email.$invalid">\r\n                \u041F\u043E\u043B\u0435 \u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u043E \u0434\u043B\u044F \u0437\u0430\u043F\u043E\u043B\u0435\u043D\u0438\u044F \u0438 \u0434\u043E\u043B\u0436\u043D\u043E \u0441\u043E\u043E\u0442\u0432\u0435\u0442\u0441\u0442\u0432\u043E\u0432\u0430\u0442\u044C "email"!\r\n            </div>\r\n            <div class="input-invalid" ng-show="!commentForm.email.$pristine && commentForm.email.$error.maxlength">\r\n                \u041C\u0430\u043A\u0441\u0438\u043C\u0430\u043B\u044C\u043D\u0430\u044F \u0434\u043B\u0438\u043D\u0430 - 50 \u0441\u0438\u043C\u0432\u043E\u043B\u043E\u0432!\r\n            </div>\r\n\r\n        <label for="homeurl">\u0412\u0430\u0448 homepage url:</label><br/>\r\n        <input type="text" \r\n            name="homeurl" \r\n            ng-pattern="/^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$/" \r\n            id="homeurl"\r\n            ng-model="userComment.homeurl" \r\n            ng-class="{\'input-wrong\': !commentForm.homeurl.$valid}"\r\n            placeholder="Enter your homepage url"><br/>\r\n            <div class="input-invalid" ng-show="!commentForm.homeurl.$pristine && commentForm.homeurl.$invalid">\r\n                \u041F\u043E\u043B\u0435 \u0434\u043E\u043B\u0436\u043D\u043E \u0441\u043E\u043E\u0442\u0432\u0435\u0442\u0441\u0442\u0432\u043E\u0432\u0430\u0442\u044C \u0442\u0438\u043F\u0443 "url"!\r\n            </div>\r\n\r\n        <div class="comment-textarea">\r\n                <label for="comment">\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0412\u0430\u0448 \u043A\u043E\u043C\u043C\u0435\u043D\u0442\u0430\u0440\u0438\u0439:</label><br/>  \r\n                <textarea \r\n                    name="comment" \r\n                    id="comment" \r\n                    required\r\n                    ng-minlength="1"\r\n                    ng-model="userComment.comment" \r\n                    ng-class="{\'input-wrong\':textareaInvalid || !commentForm.comment.$pristine && commentForm.comment.$error.minlength}"\r\n                    ng-click="textareaInvalid = false"\r\n                    placeholder="Enter your comment"></textarea>\r\n                <div class="buttons">\r\n                    <p>\u0412\u044B \u043C\u043E\u0436\u0435\u0442\u0435 \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u044C \u0442\u0435\u0433\u0438:</p>\r\n                    <button ng-click="addI()">&lt;i&gt;</button><br/>\r\n                    <button ng-click="addStrong()">&lt;strong&gt;</button><br/>\r\n                    <button ng-click="addCode()">&lt;code&gt;</button><br/>\r\n                    <button ng-click="addA()">&lt;a href="" title=""&gt;</button><br/>\r\n                </div>    \r\n        </div>\r\n        <div class="textarea-invalid" ng-show="textareaInvalid">\r\n            \u0422\u0435\u043A\u0441\u0442 \u0412\u0430\u0448\u0435\u0433\u043E \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u044F \u043D\u0435 \u0432\u0430\u043B\u0438\u0434\u0435\u043D! \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u044B\u0435 \u043F\u0440\u0438\u0447\u0438\u043D\u044B:\r\n                <ul>\r\n                    <li>\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u043D\u0438\u0435 \u0442\u0435\u0433\u0430 &lt;script&gt;</li>\r\n                    <li>\u041D\u0435\u043A\u043E\u0440\u0435\u043A\u0442\u043D\u0430\u044F \u0432\u043B\u043E\u0436\u0435\u043D\u043D\u043E\u0441\u0442\u044C \u0442\u0435\u0433\u043E\u0432</li>\r\n                    <li>\u041F\u0440\u0438\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u044E\u0442 \u043D\u0435 \u0437\u0430\u043A\u0440\u044B\u0442\u044B\u0435 \u0442\u0435\u0433\u0438</li>\r\n                    <li>\u041A\u043E\u043C\u043C\u0435\u043D\u0442\u0430\u0440\u0438\u0439 \u043D\u0435 \u043C\u043E\u0436\u0435\u0442 \u0431\u044B\u0442\u044C \u043F\u0443\u0441\u0442\u044B\u043C</li>\r\n                </ul>\r\n            \u041D\u0430\u043F\u043E\u043C\u0438\u043D\u0430\u0435\u043C, \u0447\u0442\u043E \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u044C \u043C\u043E\u0436\u043D\u043E \u043B\u0438\u0448\u044C \u0442\u0435\u0433\u0438: &lt;i&gt;, &lt;strong&gt;, &lt;code&gt;, &lt;a href="" title=""&gt;\r\n        </div>   \r\n        <label for="picture">\u0417\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044C \u043A\u0430\u0440\u0442\u0438\u043D\u043A\u0443:</label>\r\n        <input type="file" \r\n            name="picture"\r\n            id="picture" \r\n            ng-model="userComment.picture"\r\n            inchange-dir="isFileValide">\r\n        <div class="input-invalid" ng-show="!fileValid">\r\n                \u0424\u0430\u0439\u043B \u0434\u043E\u043B\u0436\u0435\u043D \u0431\u044B\u0442\u044C \u0440\u0430\u0437\u043C\u0435\u0440\u043E\u043C \u043C\u0435\u043D\u044C\u0448\u0435 \u0447\u0435\u043C 3 \u043C\u0435\u0433\u0430\u0431\u0430\u0439\u0442\u0430. \u0414\u043E\u043F\u0443\u0441\u0442\u0438\u043C\u044B\u0435 \u0444\u043E\u0440\u043C\u0430\u0442\u044B - JPG, GIF, PNG!\r\n        </div>\r\n        <button \r\n            class="send" \r\n            ng-disabled="commentForm.$invalid"\r\n            ng-click="sendComment(userComment)">\u041E\u0441\u0442\u0430\u0432\u0438\u0442\u044C \u043A\u043E\u043C\u043C\u0435\u043D\u0442\u0430\u0440\u0438\u0439!</button>    \r\n    \r\n    </form>\r\n</div>\r\n');
 $templateCache.put('comments.html','<div class="comments">\r\n    <div class="comment" ng-repeat="comment in comments |orderBy:sortField:rever">\r\n        <div class="comment-parent">\r\n            <div class="user-data">\r\n                <div class="user-image">\r\n                    <img src="media/user.png" height="40px;" alt="user">\r\n                </div>\r\n                <div class="user-name">\r\n                    <span>{{comment.userName}}</span>\r\n                </div>\r\n                <div class="user-comment-date">\r\n                    <p><span>{{comment.userDate | mydateFilter}}</span></p>\r\n                </div>\r\n                <div class="user-rating">\r\n                    <span>{{comment.userRating}}</span>\r\n                </div>\r\n                <div class="user-rating-plus" ng-click="getLike(comment)">\r\n                    \r\n                </div>\r\n                <div class="user-rating-minus" ng-click="getDislike(comment)">\r\n\r\n                </div>\r\n            </div>\r\n            <div class="user-text">\r\n                <div class="comment-text">\r\n                    <p ng-bind-html="(comment.commentText | myTrustAsHtmlFilter)"></p>\r\n                </div>\r\n                <div class="comment-image">\r\n                    <img ng-src="{{comment.comment_picture}}" alt="{{comment.comment_picture}}">\r\n                </div>\r\n            </div>\r\n            <div class="comment-comment">\r\n                <span ng-click="addForm = !addForm">\u041E\u0442\u0432\u0435\u0442\u0438\u0442\u044C</span>\r\n                <div class="add-form" ng-show="addForm">\r\n                    <addcomment-dir comment="comment"></addcomment-dir>\r\n                </div>\r\n            </div>\r\n        </div>\r\n        <div class="comments-child">\r\n            <comments-dir comments="{{comment.childComments}}"></comments-dir>\r\n        </div>\r\n    </div>\r\n</div>');
-$templateCache.put('page.html','<addcomment-dir></addcomment-dir>\r\n<br/>\r\n<div class="sort">\r\n    <div class="sort-line">\r\n        <span>\u0421\u043E\u0440\u0442\u0438\u0440\u043E\u0432\u043A\u0430 \u043A\u043E\u043C\u043C\u0435\u043D\u0442\u0430\u0440\u0438\u0435\u0432:</span>\r\n        <button ng-click="orderByName(\'userName\')">\u041F\u043E \u0438\u043C\u0435\u043D\u0438 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</button>\r\n        <button ng-click="orderByRating(\'userRating\')">\u041F\u043E \u0440\u0435\u0439\u0442\u0438\u043D\u0433\u0443</button>\r\n        <button ng-click="orderByDate(\'userDate\')">\u041F\u043E \u0434\u0430\u0442\u0435 \u0434\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u0438\u044F</button>\r\n    </div>\r\n</div>\r\n\r\n<comments-dir comments="{{comments[page]}}"></comments-dir>\r\n\r\n\r\n<div class="pages" id="pages">\r\n    <a href="#/page/{{page - 1}}" ng-show="!leftBlock">&lt;</a>\r\n    <a ng-show="leftBlock" id="arrow-left-block">&lt;</a>\r\n    <a href="#/page/{{$index+1}}" numberpage-dir index="{{$index}}" ng-repeat="i in comments">{{$index+1}}</a>\r\n    <a ng-show="rightBlock" id="arrow-right-block">&gt;</a>\r\n    <a href="#/page/{{page + 1}}" ng-show="!rightBlock">&gt;</a>\r\n</div>\r\n');
+$templateCache.put('page.html','<addcomment-dir></addcomment-dir>\r\n<br/>\r\n<div class="sort">\r\n    <div class="sort-line">\r\n        <span>\u0421\u043E\u0440\u0442\u0438\u0440\u043E\u0432\u043A\u0430 \u043A\u043E\u043C\u043C\u0435\u043D\u0442\u0430\u0440\u0438\u0435\u0432:</span>\r\n        <button ng-click="orderByName(\'userName\')">\u041F\u043E \u0438\u043C\u0435\u043D\u0438 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F</button>\r\n        <button ng-click="orderByRating(\'userRating\')">\u041F\u043E \u0440\u0435\u0439\u0442\u0438\u043D\u0433\u0443</button>\r\n        <button ng-click="orderByDate(\'userDate\')">\u041F\u043E \u0434\u0430\u0442\u0435 \u0434\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u0438\u044F</button>\r\n    </div>\r\n</div>\r\n\r\n<comments-dir comments="{{comments[page]}}"></comments-dir>\r\n\r\n\r\n<div class="pages" id="pages">\r\n    <a href="#/page/{{page}}" ng-show="!leftBlock">&lt;</a>\r\n    <a ng-show="leftBlock" id="arrow-left-block">&lt;</a>\r\n    <a href="#/page/{{$index+1}}" numberpage-dir index="{{$index}}" ng-repeat="i in comments">{{$index+1}}</a>\r\n    <a ng-show="rightBlock" id="arrow-right-block">&gt;</a>\r\n    <a href="#/page/{{page + 2}}" ng-show="!rightBlock">&gt;</a>\r\n</div>\r\n');
 $templateCache.put('start.html','<h1>Redirect to comment page</h1>');}]);
 },{}]},{},[20]);

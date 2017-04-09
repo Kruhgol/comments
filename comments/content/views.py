@@ -9,7 +9,7 @@ from datetime import datetime
 def index(request):
     return render(request, 'index.html')
 
-# def like(request, id):
+
 
 def like(request, commentId):
     print commentId
@@ -62,18 +62,6 @@ def disLike(request, commentId):
     res = json.dumps(r)
     return HttpResponse(res)
 
-
-
-
-
-
-
-
-
-
-
-
-
 def postComment(request):
     print request
     if 'picture' in request.FILES:
@@ -100,7 +88,6 @@ def postComment(request):
         c.comment_picture = request.FILES['picture']
         c.save()
 
-
     comments = Comment.objects.filter(comment_isparent = False)
     r =[]
     for i in comments:
@@ -119,21 +106,6 @@ def postComment(request):
         r.append(o)
     res = json.dumps(r)
     return HttpResponse(res)
-
-
-
-
-
-
-    # comment_name = models.CharField(max_length=200)
-    # comment_email = models.EmailField()
-    # comment_homeurl = models.CharField(blank=True, max_length=200)
-    # comment_text = models.TextField()
-    # comment_date = models.DateTimeField()
-    # comment_rating = models.IntegerField()
-    # comment_isparent = models.BooleanField()
-    # comment_parentid = models.IntegerField(null=True,blank=True)
-
 
 def getCaptcha(request):
     r = {}

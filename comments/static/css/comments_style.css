@@ -4,7 +4,7 @@ a, abbr, acronym, address, big, cite, code,
 del, dfn, em, font, img, ins, kbd, q, s, samp,
 small, strike, strong, sub, sup, tt, var,
 dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
+fieldset, form, label, legend, header,
 table, caption, tbody, tfoot, thead, tr, th, td {
   margin: 0;
   padding: 0;
@@ -21,6 +21,13 @@ html {
   width: 100%;
   background-color: #ffffff; }
 
+@font-face {
+  font-family: "Minion-Pro";
+  src: url("./../fonts/MinionPro/fe9c236a1c142788cb16ec5238c7833e.eot");
+  /* IE9*/
+  src: url("./../fonts/MinionPro/fe9c236a1c142788cb16ec5238c7833e.eot?#iefix") format("embedded-opentype"), url("./../fonts/MinionPro/fe9c236a1c142788cb16ec5238c7833e.woff2") format("woff2"), url("./../fonts/MinionPro/fe9c236a1c142788cb16ec5238c7833e.woff") format("woff"), url("./../fonts/MinionPro/fe9c236a1c142788cb16ec5238c7833e.ttf") format("truetype"), url("./../fonts/MinionPro/fe9c236a1c142788cb16ec5238c7833e.svg#Minion Pro") format("svg");
+  /* iOS 4.1- */ }
+
 body {
   height: 100%;
   width: 100%;
@@ -29,7 +36,7 @@ body {
     position: relative;
     min-height: 100%; }
     body .wrapper .content {
-      padding-bottom: 220px;
+      padding-bottom: 120px;
       margin: auto;
       width: 100%; }
     body .wrapper .footer {
@@ -37,35 +44,89 @@ body {
       left: 0;
       bottom: 0;
       width: 100%;
-      height: 200px; }
+      height: 100px; }
       body .wrapper .footer .footer-content {
-        /*width: $contentWidth;*/
         width: 100%;
-        margin: auto; }
+        margin: auto;
+        height: 100px; }
 
 .clear-both {
   clear: both; }
 
-@font-face {
-  font-family: "CertaSans-Medium";
-  src: url("./../fonts/CertaSans-Medium/f4543cc99e81e6836eb3a8a0c93a721e.eot");
-  /* IE9*/
-  src: url("./../fonts/CertaSans-Medium/f4543cc99e81e6836eb3a8a0c93a721e.eot?#iefix") format("embedded-opentype"), url("./../fonts/CertaSans-Medium/f4543cc99e81e6836eb3a8a0c93a721e.woff2") format("woff2"), url("./../fonts/CertaSans-Medium/f4543cc99e81e6836eb3a8a0c93a721e.woff") format("woff"), url("./../fonts/CertaSans-Medium/f4543cc99e81e6836eb3a8a0c93a721e.ttf") format("truetype"), url("./../fonts/CertaSans-Medium/f4543cc99e81e6836eb3a8a0c93a721e.svg#CertaSans-Medium") format("svg");
-  /* iOS 4.1- */ }
+.sort {
+  width: 100%;
+  max-width: 1200px;
+  min-width: 650px;
+  margin: 20px 0 20px 0;
+  margin: auto;
+  border: solid 2px #95FA8B;
+  background-color: #BCEBC0;
+  border-radius: 3px;
+  padding: 10px 0 10px 0; }
+  .sort .sort-line {
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    vertical-align: middle;
+    padding-left: 40px; }
+    .sort .sort-line span {
+      font-size: 24px; }
+      @media only screen and (min-width: 768px) and (max-width: 991px) {
+        .sort .sort-line span {
+          font-size: 20px; } }
+      @media only screen and (max-width: 767px) {
+        .sort .sort-line span {
+          font-size: 16px; } }
+    .sort .sort-line button {
+      height: 30px;
+      font-size: 16px;
+      background-color: #279A27;
+      border: solid 3px #085200;
+      border-radius: 5px; }
+      @media only screen and (min-width: 768px) and (max-width: 991px) {
+        .sort .sort-line button {
+          font-size: 14px; } }
+      @media only screen and (max-width: 767px) {
+        .sort .sort-line button {
+          font-size: 12px; } }
+      .sort .sort-line button:hover {
+        cursor: pointer; }
 
-@font-face {
-  font-family: "Engine-Regular";
-  src: url("./../fonts/Engine-Regular/EngineRegular.eot");
-  /* IE9*/
-  src: url("./../fonts/Engine-Regular/EngineRegular.eot?#iefix") format("embedded-opentype"), url("./../fonts/Engine-Regular/EngineRegular.woff") format("woff"), url("./../fonts/Engine-Regular/EngineRegular.ttf") format("truetype"), url("./../fonts/Engine-Regular/90767eeaed7204c074162c5a44e4145f.svg#Engine-Regular") format("svg");
-  /* iOS 4.1- */ }
+.pages {
+  width: 100%;
+  padding: 20px 0 20px 0;
+  margin: auto;
+  text-align: center; }
+  .pages a {
+    display: inline-block;
+    height: 40px;
+    width: 40px;
+    line-height: 40px;
+    font-size: 24px;
+    border: solid 1px #95FA8B;
+    background-color: #BCEBC0;
+    text-align: center;
+    vertical-align: middle;
+    text-decoration: none; }
+    .pages a:hover {
+      background-color: #8BD065; }
 
-@font-face {
-  font-family: "Minion-Pro";
-  src: url("./../fonts/MinionPro/fe9c236a1c142788cb16ec5238c7833e.eot");
-  /* IE9*/
-  src: url("./../fonts/MinionPro/fe9c236a1c142788cb16ec5238c7833e.eot?#iefix") format("embedded-opentype"), url("./../fonts/MinionPro/fe9c236a1c142788cb16ec5238c7833e.woff2") format("woff2"), url("./../fonts/MinionPro/fe9c236a1c142788cb16ec5238c7833e.woff") format("woff"), url("./../fonts/MinionPro/fe9c236a1c142788cb16ec5238c7833e.ttf") format("truetype"), url("./../fonts/MinionPro/fe9c236a1c142788cb16ec5238c7833e.svg#Minion Pro") format("svg");
-  /* iOS 4.1- */ }
+#arrow-left-block,
+#arrow-right-block {
+  background-color: #8A8A8A !important; }
+  #arrow-left-block:hover,
+  #arrow-right-block:hover {
+    background-color: #8A8A8A; }
+
+header {
+  width: 100%;
+  height: 50px;
+  margin-bottom: 20px;
+  background-color: #C8E8C7;
+  border-bottom: solid 5px #7EEB65;
+  line-height: 45px;
+  padding: 0 20px 0 20px;
+  font-size: 24px; }
 
 .add-comment {
   width: 400px;
@@ -117,17 +178,12 @@ body {
           width: 100px; }
         .add-comment form .comment-textarea .buttons button {
           margin-top: 10px;
-          width: 120px;
           font-size: 12px; }
+          .add-comment form .comment-textarea .buttons button:nth-child(8) {
+            width: 125px;
+            white-space: nowrap; }
           .add-comment form .comment-textarea .buttons button:hover {
             cursor: pointer; }
-    .add-comment form .captha {
-      border: solid 1px black; }
-      .add-comment form .captha img {
-        float: left; }
-      .add-comment form .captha input {
-        float: right;
-        width: 100px; }
     .add-comment form .send {
       margin: 10px;
       height: 25px;
@@ -200,7 +256,11 @@ body {
       width: 30%;
       padding-left: 20px; }
       .comment-parent .user-data .user-name span {
-        font-size: 30px; }
+        font-size: 30px;
+        font-family: "Minion-Pro", arial, verdana, geneva, lucida, "lucida grande", helvetica, sans-serif; }
+    .comment-parent .user-data .user-comment-date p span {
+      font-size: 20px;
+      font-family: "Minion-Pro", arial, verdana, geneva, lucida, "lucida grande", helvetica, sans-serif; }
     .comment-parent .user-data .user-image {
       width: 50px;
       height: 50px;
@@ -242,6 +302,8 @@ body {
         .comment-parent .user-text .comment-text p a {
           color: #3066D5;
           font-size: 20px; }
+        .comment-parent .user-text .comment-text p code, .comment-parent .user-text .comment-text p strong {
+          font-size: 20px; }
     .comment-parent .user-text .comment-image {
       text-align: center;
       padding: 10px; }
@@ -258,84 +320,13 @@ body {
       background-color: #F4E989;
       border-color: #C0B900; }
 
-/*        
-        @include respond-to(medium){
-
-        }
-        @include respond-to(tablet){
-
-        }
-        @include respond-to(mobile){
-          
-        } 
-*/
-.sort {
-  width: 100%;
-  max-width: 1200px;
-  min-width: 650px;
-  margin: 20px 0 20px 0;
-  margin: auto;
-  border: solid 2px #95FA8B;
-  background-color: #BCEBC0;
-  border-radius: 3px;
-  padding: 10px 0 10px 0; }
-  .sort .sort-line {
-    width: 100%;
-    height: 50px;
-    line-height: 50px;
+.footer-content {
+  background-color: #C8E8C7;
+  border-top: solid 5px #7EEB65;
+  display: table; }
+  .footer-content p {
+    display: table-cell;
     vertical-align: middle;
-    padding-left: 40px; }
-    .sort .sort-line span {
-      font-size: 24px; }
-      @media only screen and (min-width: 768px) and (max-width: 991px) {
-        .sort .sort-line span {
-          font-size: 20px; } }
-      @media only screen and (max-width: 767px) {
-        .sort .sort-line span {
-          font-size: 16px; } }
-    .sort .sort-line button {
-      height: 30px;
-      font-size: 16px;
-      background-color: #279A27;
-      border: solid 3px #085200;
-      border-radius: 5px; }
-      @media only screen and (min-width: 768px) and (max-width: 991px) {
-        .sort .sort-line button {
-          font-size: 14px; } }
-      @media only screen and (max-width: 767px) {
-        .sort .sort-line button {
-          font-size: 12px; } }
-      .sort .sort-line button:hover {
-        cursor: pointer; }
-
-/*<div class="pages">
-    <a href="#/page/1">1</a>
-    <a href="#/page/2">2</a>
-    <a href="#/page/3">3</a>
-    <a href="#/page/4">4</a>
-</div>*/
-.pages {
-  width: 100%;
-  padding: 20px 0 20px 0;
-  margin: auto;
-  text-align: center; }
-  .pages a {
-    display: inline-block;
-    height: 40px;
-    width: 40px;
-    line-height: 40px;
-    font-size: 24px;
-    border: solid 1px #95FA8B;
-    background-color: #BCEBC0;
     text-align: center;
-    vertical-align: middle;
-    text-decoration: none; }
-    .pages a:hover {
-      background-color: #8BD065; }
-
-#arrow-left-block,
-#arrow-right-block {
-  background-color: #8A8A8A !important; }
-  #arrow-left-block:hover,
-  #arrow-right-block:hover {
-    background-color: #8A8A8A; }
+    font-family: tahoma, arial, verdana, geneva, lucida, "lucida grande", helvetica, sans-serif;
+    font-size: 24px; }

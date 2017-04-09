@@ -27,5 +27,3 @@ urlpatterns = [
     url(r'^dislike/(?P<commentId>[^/]+)', views.disLike),
 
 ]
-
-    # url(r'^like/((?P<id>[^/]+)', views.like),

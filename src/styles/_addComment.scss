@@ -12,7 +12,7 @@
         margin: 10px;
     }
 
-    form{
+    form {
         width: 100%;
         text-align: center;
         position: relative;
@@ -27,7 +27,7 @@
             width: 60%;
         }
 
-        .comment-textarea{
+        .comment-textarea {
             position: relative;
             width: 400px;
             text-align: left;
@@ -58,24 +58,16 @@
                 }
                 button {
                     margin-top: 10px;
-                    width: 120px;
                     font-size: 12px;
+                    &:nth-child(8) {
+                        width: 125px;
+                        white-space: nowrap;
+                    }
                     &:hover {
                         cursor: pointer;
                     }
                 }
             }        
-        }
-
-        .captha {
-            border:solid 1px black;
-            img {
-                float: left;
-            }
-            input {
-                float: right;
-                width: 100px;
-            }
         }
 
         .send {

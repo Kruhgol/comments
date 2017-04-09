@@ -20,9 +20,9 @@ body {
             width: 100%;
             height: $footerHeight;
             .footer-content {
-                /*width: $contentWidth;*/
                 width: 100%;
                 margin: auto;
+                height: $footerHeight;
             }
         }
     }

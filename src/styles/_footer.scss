@@ -1,0 +1,12 @@
+.footer-content {
+    background-color: #C8E8C7;
+    border-top: solid 5px #7EEB65;
+    display: table;
+    p {
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center;
+        font-family: $Tahoma;
+        font-size: 24px;
+    }
+}

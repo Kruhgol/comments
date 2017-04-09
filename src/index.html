@@ -6,7 +6,7 @@
 	<meta charset="UTF-8">
 	<title></title>
     
-	<link rel="stylesheet" href="{% static 'static/css/style.css' %}">
+	<link rel="stylesheet" href="{% static 'static/css/comments_style.css' %}">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
@@ -17,18 +17,21 @@
 
     <div class="wrapper">
         <div class="content">
+            <header>
+                Комментарии
+            </header>
             <ng-view></ng-view>     
         </div>
         <div class="footer">
             <div class="footer-content">
-                
+                <p>Разработал - Николай Кругол. email - kruhgol@gmail.com. моб. +38(095) 522 08 35</p>
             </div>
         </div>
     </div>
     
 
 
-	<script src="{% static 'static/js/build.js' %}"></script>
+	<script src="{% static 'static/js/comments_build.js' %}"></script>
 
 </body>
 </html>
