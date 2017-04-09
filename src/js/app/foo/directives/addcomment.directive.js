@@ -8,12 +8,6 @@ module.exports = function($templateCache) {
     return {
         link: function(scope, element, attribute) {
 
-            // scope.$watch('comment.comment_id', function(newVal){
-            //     if (newVal){
-            //         scope.comment.comment_id = newVal;
-            //     }
-            // });
-
             // add tags by buttoms
             var textarea = element.find("form")[0].comment;
             scope.addI = function() {
