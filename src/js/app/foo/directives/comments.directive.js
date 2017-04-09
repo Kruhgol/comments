@@ -1,8 +1,13 @@
 'use strict';
 
+//directive for show comments
+//scope isolated
+//loval variable inputComments is Array of comments to show
+
 module.exports = function($templateCache){
     return {
         link: function(scope, element, attribute){
+
             scope.$watch("inputComments", function(newValue){
                 if(newValue){
                     scope.comments = JSON.parse(newValue);
@@ -13,8 +18,9 @@ module.exports = function($templateCache){
         restrict: 'EA',
 
         controller: function($scope, requestsService, appData, $rootScope, $sce){
+            //show form for answering this comment
             $scope.addForm = false;
-
+            
             $scope.getLike = function(comment){
                 console.log('like');
                 requestsService.getLike(comment.comment_id).then(function(result){

@@ -15,7 +15,7 @@
 <div class="pages" id="pages">
     <a href="#/page/{{page - 1}}" ng-show="!leftBlock">&lt;</a>
     <a ng-show="leftBlock" id="arrow-left-block">&lt;</a>
-    <a href="#/page/{{$index+1}}" page-dir index="{{$index}}" ng-repeat="i in comments">{{$index+1}}</a>
+    <a href="#/page/{{$index+1}}" numberpage-dir index="{{$index}}" ng-repeat="i in comments">{{$index+1}}</a>
     <a ng-show="rightBlock" id="arrow-right-block">&gt;</a>
     <a href="#/page/{{page + 1}}" ng-show="!rightBlock">&gt;</a>
 </div>

@@ -1,4 +1,6 @@
 
+//directive for observing for change in input[type=file] and checking input value
+
 module.exports = function($rootScope){
     return {
         link: function(scope, element, attribute){

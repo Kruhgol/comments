@@ -1,48 +1,45 @@
 'use strict';
 
 module.exports = function($scope, requestsService, appData, $rootScope, $filter){
-
+    //default values
     $scope.sortField = 'userDate';
     $scope.reverse = false;
     $scope.commentsOnPage = 10;
 
-
+    // get comments from server
+    // result with comments (Array) save in appData.value service for storing 
+    // event 'changeCommentsData' informs in App that appData is has changed
     requestsService.getComments().then(function(result){
         appData.comments = result.data;
         $rootScope.$broadcast('changeCommentsData');
     });
 
-    $scope.devidedIntoGroups = function(beforeArr){
-        var after = [];
-        for(var i=0, j=0; i<beforeArr.length;){
-            if(i+10 <= beforeArr.length){
-                after[j] = beforeArr.slice(i, i+10);
-                i+=10;
+    //function devides beforeArr to groups, saves they to outputArr and returns it
+    $scope.devidedIntoGroups = function(inputArr){
+        var outputArr = [];
+        for(var i=0, j=0; i<inputArr.length;){
+            if(i+$scope.commentsOnPage <= inputArr.length){
+                outputArr[j] = inputArr.slice(i, i+10);
+                i+=$scope.commentsOnPage;
             } else {
-                after[j] = beforeArr.slice(i);
+                outputArr[j] = inputArr.slice(i);
                 break;
             }
             j++;
         } 
-        return  after;      
+        return  outputArr;      
     }
 
-
+    //event 'changeCommentsData' - appData.comments has changed
+    //function gets comments from appData, sort this Array and saves comments in $scope.comments
     $scope.$on('changeCommentsData', function(){
         $scope.commentsData = appData.comments;
         $scope.order($scope.sortField, $scope.reverse);
-        $scope.comments = $scope.devidedIntoGroups($scope.commentsData);
-        // if ($scope.page == 0){
-        //     $scope.leftBlock == true;
-        // } else
-        // if ($scope.page == $scope.comments.length){
-        //     $scope.rightBlock == true;
-        // } else {
-        //     $scope.leftBlock = false;
-        //     $scope.rightBlock = false;
-        // } 
+        $scope.comments = $scope.devidedIntoGroups($scope.commentsData); 
     })
 
+    //function sorts comments
+    //@param predicate - comment sort field
     $scope.order = function(predicate, reverse){
         var orderBy = $filter('orderBy');
         $scope.commentsData = orderBy($scope.commentsData, $scope.sortField, $scope.reverse);

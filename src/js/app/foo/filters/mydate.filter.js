@@ -1,3 +1,6 @@
+
+//filter for output date in comment
+
 module.exports = function(){
         return function(param){
             var months = {
